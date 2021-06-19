@@ -2,7 +2,7 @@
 
 namespace CodeTech\EuPago\MBWay;
 
-use EuPago\EuPago;
+use CodeTech\EuPago\EuPago;
 use GuzzleHttp\Client;
 
 class MBWay extends EuPago

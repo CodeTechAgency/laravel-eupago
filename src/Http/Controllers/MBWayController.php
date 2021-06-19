@@ -3,9 +3,9 @@
 namespace CodeTech\EuPago\Http\Controllers;
 
 use Barryvdh\Debugbar\Controllers\BaseController;
-use EuPago\Events\MBWayReferencePaid;
-use EuPago\Http\Requests\MbWayCallbackRequest;
-use EuPago\Models\MbwayReference;
+use CodeTech\EuPago\Events\MBWayReferencePaid;
+use CodeTech\EuPago\Http\Requests\MbWayCallbackRequest;
+use CodeTech\EuPago\Models\MbwayReference;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;

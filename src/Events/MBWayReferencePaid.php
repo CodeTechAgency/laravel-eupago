@@ -2,7 +2,7 @@
 
 namespace CodeTech\EuPago\Events;
 
-use EuPago\Models\MbwayReference;
+use CodeTech\EuPago\Models\MbwayReference;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
