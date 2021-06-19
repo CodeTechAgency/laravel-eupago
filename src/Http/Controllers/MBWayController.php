@@ -1,6 +1,6 @@
 <?php
 
-namespace EuPago\Http\Controllers;
+namespace CodeTech\EuPago\Http\Controllers;
 
 use Barryvdh\Debugbar\Controllers\BaseController;
 use EuPago\Events\MBWayReferencePaid;

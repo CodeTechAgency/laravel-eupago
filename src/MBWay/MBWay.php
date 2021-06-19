@@ -1,6 +1,6 @@
 <?php
 
-namespace EuPago\MBWay;
+namespace CodeTech\EuPago\MBWay;
 
 use EuPago\EuPago;
 use GuzzleHttp\Client;

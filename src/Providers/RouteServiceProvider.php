@@ -1,6 +1,6 @@
 <?php
 
-namespace EuPago\Providers;
+namespace CodeTech\EuPago\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
