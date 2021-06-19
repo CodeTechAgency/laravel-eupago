@@ -46,7 +46,7 @@ class EuPagoServiceProvider extends ServiceProvider
      */
     private function setProviders()
     {
-        $this->app->register('EuPago\Providers\RouteServiceProvider');
+        $this->app->register('CodeTech\EuPago\Providers\RouteServiceProvider');
     }
 
     /**
