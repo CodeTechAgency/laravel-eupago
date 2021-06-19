@@ -1,0 +1,37 @@
+{
+  "name": "codetech/laravel-eupago",
+  "description": "A Laravel package for making payments through the EuPago API.",
+  "keywords": [
+    "eupago",
+    "mb references",
+    "laravel-eupago",
+    "laravel",
+    "codetech"
+  ],
+  "authors": [
+    {
+      "name": "José Osório",
+      "email": "jfrosorio@gmail.com",
+      "role": "Developer"
+    }
+  ],
+  "license": "MIT",
+  "require": {
+    "php": "^8.0",
+    "laravel/framework": "^8.29"
+  },
+  "autoload": {
+    "psr-4": {
+      "CodeTech\\EuPago\\": "src/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "extra": {
+    "laravel": {
+      "providers": [
+        "CodeTech\\EuPago\\Providers\\EuPagoServiceProvider"
+      ]
+    }
+  }
+}
