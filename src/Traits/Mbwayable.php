@@ -1,6 +1,6 @@
 <?php
 
-namespace EuPago\Traits;
+namespace CodeTech\EuPago\Traits;
 
 use EuPago\Models\MbwayReference;
 

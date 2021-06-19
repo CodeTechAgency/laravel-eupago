@@ -1,6 +1,6 @@
 <?php
 
-namespace EuPago\Http\Requests;
+namespace CodeTech\EuPago\Http\Requests;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;

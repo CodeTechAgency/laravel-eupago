@@ -1,6 +1,6 @@
 <?php
 
-namespace EuPago\Providers;
+namespace CodeTech\EuPago\Providers;
 
 use Illuminate\Support\ServiceProvider;
 

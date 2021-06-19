@@ -1,6 +1,6 @@
 <?php
 
-namespace EuPago;
+namespace CodeTech\EuPago;
 
 class EuPago
 {

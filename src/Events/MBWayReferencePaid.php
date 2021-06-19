@@ -1,6 +1,6 @@
 <?php
 
-namespace EuPago\Events;
+namespace CodeTech\EuPago\Events;
 
 use EuPago\Models\MbwayReference;
 use Illuminate\Broadcasting\InteractsWithSockets;
