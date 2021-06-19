@@ -2,7 +2,7 @@
 
 namespace CodeTech\EuPago\Traits;
 
-use EuPago\Models\MbwayReference;
+use CodeTech\EuPago\Models\MbwayReference;
 
 trait Mbwayable
 {
