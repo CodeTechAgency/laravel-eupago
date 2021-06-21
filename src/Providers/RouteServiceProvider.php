@@ -14,7 +14,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    protected $namespace = 'EuPago\Http\Controllers';
+    protected $namespace = 'CodeTech\EuPago\Http\Controllers';
 
     /**
      * The path to the "home" route for your application.

@@ -2,29 +2,29 @@
 
 namespace CodeTech\EuPago\Events;
 
-use CodeTech\EuPago\Models\MbwayReference;
+use CodeTech\EuPago\Models\MbReference;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MBWayReferencePaid
+class MBReferencePaid
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * The MBWay reference object.
+     * The MbReference reference object.
      *
-     * @var MbwayReference
+     * @var MbReference
      */
     public $reference;
 
     /**
-     * MBWayReferencePaid constructor.
+     * MBReferencePaid constructor.
      *
-     * @param MbwayReference $reference
+     * @param MbReference $reference
      */
-    public function __construct(MbwayReference $reference)
+    public function __construct(MbReference $reference)
     {
         $this->reference = $reference;
     }
