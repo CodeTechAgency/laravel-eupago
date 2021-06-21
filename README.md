@@ -41,7 +41,102 @@ you can use the "test" environment during the development stage of your applicat
 environment when your application is ready for production.
 
 
-## Usage
+### MB References
+
+#### Usage
+
+For creating a MB reference, take the following example:
+```
+use CodeTech\EuPago\MB\MB;
+
+$order = Order::find(1);
+
+$mb = new MB(
+    $order->value,
+    $order->id,
+    $order->date,
+    $order->payment_limit_date,
+    $order->value,
+    $order->value,
+    0 // allows duplicated payments
+);
+
+try {
+    // Make the request to EUPago's API
+    $mbReferenceData = $mb->create();
+
+    if ($mb->hasErrors()) {
+        // handle errors
+    }
+    
+    // Make the request to EUPago's API
+    $order->mbReferences()->create($mbReferenceData);
+} catch (\Exception $e) {
+    // handle exception
+}
+```
+
+`$referenceData` will contain all the information about the payment: 
+```
+[
+    'success' => true,
+    'state' => 0,
+    'response' => "OK",
+    'reference' => "000001236",
+    'value' => "3.00000",
+]
+```
+
+Use the trait on the models for which you want to generate MB references:
+
+```
+
+use CodeTech\EuPago\Traits\Mbable;
+
+class Order extends Model
+{
+    use Mbable;
+
+```
+
+Retrieve the MB references:
+
+```
+$order = Order::find(1);
+
+$mbReferences = $order->mbReferences;
+```
+
+#### Callback
+
+The package already handles the callback, updating the payment reference state and triggering an `MBWayReferencePaid` event.
+
+```
+GET
+
+/eupago/mb/callback
+```
+
+####Params
+
+| Name          | Type      |
+|---------------|:---------:|
+| valor         | float     |
+| canal         | string    |
+| referencia    | string    |
+| transacao     | string    |
+| identificador | integer   |
+| mp            | string    |
+| chave_api     | string    |
+| data          | date time |
+| entidade      | string    |
+| comissao      | float     |
+| local         | string    |
+
+
+### MB Way References
+
+#### Usage
 
 Use the trait on the models for which you want to generate MB Way references:
 
@@ -55,7 +150,6 @@ class Order extends Model
 
 ```
 
-
 Retrieve the MB Way references:
 
 ```
@@ -64,9 +158,7 @@ $order = Order::find(1);
 $mbwayReferences = $order->mbwayReferences;
 ```
 
-## MBWay
-
-### Callback
+#### Callback
 
 The package already handles the callback, updating the payment reference state and triggering an `MBWayReferencePaid` event.
 

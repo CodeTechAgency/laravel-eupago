@@ -7,7 +7,7 @@ use CodeTech\EuPago\Models\MbwayReference;
 trait Mbwayable
 {
     /**
-     * Get all of the models's MB Way references.
+     * Get all of the models' MB Way references.
      */
     public function mbwayReferences()
     {
