@@ -3,7 +3,9 @@
   "description": "A Laravel package for making payments through the EuPago API.",
   "keywords": [
     "eupago",
+    "referências multibanco",
     "mb references",
+    "mbway references",
     "laravel-eupago",
     "laravel",
     "codetech"
