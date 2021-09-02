@@ -73,14 +73,14 @@ class MB extends EuPago
      * MB constructor.
      *
      * @param float $value
-     * @param int $id
-     * @param string $startDate
-     * @param string $endDate
+     * @param string $id
+     * @param Carbon $startDate
+     * @param Carbon $endDate
      * @param float $minValue
      * @param float $maxValue
      * @param bool $allowDuplication
      */
-    public function __construct(float $value, int $id, Carbon $startDate, Carbon $endDate, float $minValue, float $maxValue, bool $allowDuplication = false)
+    public function __construct(float $value, string $id, Carbon $startDate, Carbon $endDate, float $minValue, float $maxValue, bool $allowDuplication = false)
     {
         $this->value            = $value;
         $this->id               = $id;

@@ -5,7 +5,6 @@ namespace CodeTech\EuPago\Traits;
 use Carbon\Carbon;
 use CodeTech\EuPago\MB\MB;
 use CodeTech\EuPago\Models\MbReference;
-use CodeTech\EuPago\Models\MbwayReference;
 
 trait Mbable
 {
@@ -20,10 +19,17 @@ trait Mbable
     /**
      * Creates a MB reference.
      *
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @param float $value
+     * @param string $id
+     * @param Carbon $startDate
+     * @param Carbon $endDate
+     * @param float $minValue
+     * @param float $maxValue
+     * @param bool $allowDuplication
+     * @return array
+     * @throws \Exception
      */
-    public function createMbReference(float $value, int $id, Carbon $startDate, Carbon $endDate, float $minValue, float $maxValue, bool $allowDuplication = false)
+    public function createMbReference(float $value, string $id, Carbon $startDate, Carbon $endDate, float $minValue, float $maxValue, bool $allowDuplication = false)
     {
         $mb = new MB(
             $value,
