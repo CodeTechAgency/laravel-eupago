@@ -2,6 +2,9 @@
 
 A Laravel package for making payments through the EuPago API.
 
+[![Latest version](https://img.shields.io/github/release/CodeTechAgency/laravel-eupago?style=flat-square)](https://github.com/CodeTechAgency/laravel-eupago/releases)
+[![GitHub license](https://img.shields.io/github/license/CodeTechAgency/laravel-eupago?style=flat-square)](https://github.com/CodeTechAgency/laravel-eupago/blob/master/LICENSE)
+
 
 ## Installation
 
@@ -183,3 +186,17 @@ GET
 | entidade      | string    |
 | comissao      | float     |
 | local         | string    |
+
+
+
+---
+
+
+## License
+
+**codetech/laravel-eupago** is open-sourced software licensed under the [MIT license](https://github.com/CodeTechAgency/laravel-eupago/blob/master/LICENSE).
+
+
+## About CodeTech
+
+[CodeTech](https://www.codetech.pt) is a web development agency based on Matosinhos, Portugal. Oh, and we LOVE Laravel!
