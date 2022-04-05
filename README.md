@@ -1,3 +1,6 @@
+![laravel-eupago-repo-banner](https://user-images.githubusercontent.com/17640929/161711354-03727be1-88cb-49df-ad58-494a61606e0b.png)
+
+
 # Laravel EuPago
 
 A Laravel package for making payments through the EuPago API.
