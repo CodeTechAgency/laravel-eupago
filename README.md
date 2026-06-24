@@ -197,7 +197,7 @@ GET
 
 ## Upgrading
 
-Please see [UPGRADE.md](UPGRADE.md) for information on how to upgrade between major versions.
+Please see [UPGRADE.md](https://github.com/CodeTechAgency/laravel-eupago/blob/master/UPGRADE.md) for information on how to upgrade between major versions.
 
 
 ## License
