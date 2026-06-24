@@ -20,14 +20,9 @@ class MbReference extends Model
         'state',
     ];
 
-    /**
-     * @inheritDoc
-     */
-    protected $dates = [
-        'start_date',
-        'end_date',
-        'created_at',
-        'updated_at',
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
     ];
 
 

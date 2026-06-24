@@ -16,6 +16,11 @@ class MbwayReference extends Model
         'state',
     ];
 
+    protected $casts = [
+        'value' => 'float',
+        'state' => 'integer',
+    ];
+
 
     /*
     |--------------------------------------------------------------------------
