@@ -195,6 +195,11 @@ GET
 ---
 
 
+## Upgrading
+
+Please see [UPGRADE.md](UPGRADE.md) for information on how to upgrade between major versions.
+
+
 ## License
 
 **codetech/laravel-eupago** is open-sourced software licensed under the [MIT license](https://github.com/CodeTechAgency/laravel-eupago/blob/master/LICENSE).
