@@ -28,6 +28,11 @@
       "CodeTech\\EuPago\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "CodeTech\\EuPago\\Tests\\": "tests/"
+    }
+  },
   "minimum-stability": "stable",
   "prefer-stable": true,
   "extra": {
@@ -36,5 +41,19 @@
         "CodeTech\\EuPago\\Providers\\EuPagoServiceProvider"
       ]
     }
+  },
+  "require-dev": {
+    "pestphp/pest": "^2.36",
+    "pestphp/pest-plugin-laravel": "^2.4",
+    "orchestra/testbench": "^7.0|^8.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    },
+    "sort-packages": true
+  },
+  "scripts": {
+    "test": "vendor/bin/pest"
   }
 }
