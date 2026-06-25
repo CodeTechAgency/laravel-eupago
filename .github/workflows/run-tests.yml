@@ -36,6 +36,9 @@ jobs:
 
       - name: Install dependencies
         run: |
+          # Laravel 9 and 10 are EOL and carry unpatched advisories; allow
+          # installing them so we can still test compatibility against them.
+          composer config --no-plugins policy.advisories.block false
           composer require \
             "laravel/framework:${{ matrix.laravel }}" \
             "orchestra/testbench:${{ matrix.testbench }}" \
