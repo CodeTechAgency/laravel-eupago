@@ -17,11 +17,12 @@ it('marks a pending MBWay reference as paid and dispatches the event', function 
     );
 });
 
-it('returns 404 when no pending MBWay reference matches', function () {
+it('returns 404 when the reference exists but the value does not match', function () {
     Event::fake([MBWayReferencePaid::class]);
+    createPendingMbwayReference();
 
     $response = $this->getJson(route('eupago.mbway.callback', validMbwayCallbackPayload([
-        'referencia' => '111111111',
+        'valor' => '99.99',
     ])));
 
     $response->assertNotFound()->assertJson(['response' => 'No pending reference found']);

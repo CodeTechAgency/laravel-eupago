@@ -17,13 +17,12 @@ it('marks a pending MB reference as paid and dispatches the event', function () 
     );
 });
 
-it('returns 404 when no pending MB reference matches', function () {
+it('returns 404 when the reference exists but the value does not match', function () {
     Event::fake([MBReferencePaid::class]);
+    createPendingMbReference();
 
-    // Note: the `exists` validation is currently dead (the `refrencia` typo bug),
-    // so an unknown reference passes validation and 404s at the controller.
     $response = $this->getJson(route('eupago.mb.callback', validMbCallbackPayload([
-        'referencia' => '000000000',
+        'valor' => '99.99',
     ])));
 
     $response->assertNotFound()->assertJson(['response' => 'No pending reference found']);
