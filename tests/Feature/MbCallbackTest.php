@@ -37,6 +37,14 @@ it('returns 404 when the matching MB reference is already paid', function () {
     $response->assertNotFound();
 });
 
+it('rejects an MB callback for a reference that does not exist', function () {
+    $response = $this->getJson(route('eupago.mb.callback', validMbCallbackPayload([
+        'referencia' => '000000000',
+    ])));
+
+    $response->assertStatus(422)->assertJsonStructure(['referencia']);
+});
+
 it('rejects an MB callback from an unknown channel', function () {
     $response = $this->getJson(route('eupago.mb.callback', validMbCallbackPayload([
         'canal' => 'someone-else',

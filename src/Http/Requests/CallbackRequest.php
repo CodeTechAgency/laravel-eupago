@@ -42,7 +42,7 @@ abstract class CallbackRequest extends FormRequest
                 'required',
                 Rule::in([config('eupago.channel')])
             ],
-            'referencia' => 'required',
+            'referencia' => ['required'],
             'transacao' => 'required',
             'identificador' => 'required',
             'mp' => 'required',
