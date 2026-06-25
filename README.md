@@ -10,6 +10,16 @@ A Laravel package for making payments through the EuPago API.
 [![GitHub license](https://img.shields.io/github/license/CodeTechAgency/laravel-eupago?style=flat-square)](https://github.com/CodeTechAgency/laravel-eupago/blob/master/LICENSE)
 
 
+## Compatibility
+
+| Laravel | Package |
+|---------|---------|
+| 11      | `v3.1+` |
+| 10      | `v2.1+` |
+| 9       | `v2.x`  |
+| 8       | `v1.x`  |
+
+
 ## Installation
 
 
