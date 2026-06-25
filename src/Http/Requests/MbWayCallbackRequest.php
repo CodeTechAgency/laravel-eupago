@@ -26,7 +26,7 @@ class MbWayCallbackRequest extends CallbackRequest
     {
         $parentRules = parent::rules();
 
-        $parentRules['refrencia'][] = Rule::exists('mbway_references', 'reference');
+        $parentRules['referencia'][] = Rule::exists('mbway_references', 'reference');
 
         return $parentRules;
     }

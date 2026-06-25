@@ -37,6 +37,14 @@ it('returns 404 when the matching MBWay reference is already paid', function () 
     $response->assertNotFound();
 });
 
+it('rejects an MBWay callback for a reference that does not exist', function () {
+    $response = $this->getJson(route('eupago.mbway.callback', validMbwayCallbackPayload([
+        'referencia' => '111111111',
+    ])));
+
+    $response->assertStatus(422)->assertJsonStructure(['referencia']);
+});
+
 it('rejects an MBWay callback from an unknown channel', function () {
     $response = $this->getJson(route('eupago.mbway.callback', validMbwayCallbackPayload([
         'canal' => 'someone-else',

@@ -2,10 +2,6 @@
 
 namespace CodeTech\EuPago\Http\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class MbCallbackRequest extends CallbackRequest
@@ -30,7 +26,7 @@ class MbCallbackRequest extends CallbackRequest
     {
         $parentRules = parent::rules();
 
-        $parentRules['refrencia'][] = Rule::exists('mb_references', 'reference');
+        $parentRules['referencia'][] = Rule::exists('mb_references', 'reference');
 
         return $parentRules;
     }
