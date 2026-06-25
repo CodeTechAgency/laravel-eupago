@@ -13,10 +13,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Explicit combinations: Laravel 9 supports PHP 8.0–8.2, Laravel 10 supports PHP 8.1–8.3.
+        # Laravel 10 supports PHP 8.1–8.3.
         include:
-          - { php: '8.1', laravel: '9.*', testbench: '7.*' }
-          - { php: '8.2', laravel: '9.*', testbench: '7.*' }
           - { php: '8.1', laravel: '10.*', testbench: '8.*' }
           - { php: '8.2', laravel: '10.*', testbench: '8.*' }
           - { php: '8.3', laravel: '10.*', testbench: '8.*' }
@@ -36,8 +34,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # Laravel 9 and 10 are EOL and carry unpatched advisories; allow
-          # installing them so we can still test compatibility against them.
+          # Laravel 10 is EOL and carries unpatched advisories; allow installing
+          # it so we can still test compatibility against it.
           composer config --no-plugins policy.advisories.block false
           composer require \
             "laravel/framework:${{ matrix.laravel }}" \
