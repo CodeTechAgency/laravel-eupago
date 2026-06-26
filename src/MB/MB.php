@@ -127,6 +127,7 @@ class MB extends EuPago
      *
      * @return array
      * @throws \Illuminate\Http\Client\ConnectionException
+     * @throws \Illuminate\Http\Client\RequestException
      */
     public function create(): array
     {
