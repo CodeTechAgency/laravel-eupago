@@ -281,7 +281,7 @@ GET
 | canal         | string    |
 | referencia    | string    |
 | transacao     | string    |
-| identificador | integer   |
+| identificador | string    |
 | mp            | string    |
 | chave_api     | string    |
 | data          | date time |
