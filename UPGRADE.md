@@ -5,7 +5,7 @@
 This release adds PayShop support, which uses a new `payshop_references` table. Re-publish the migrations (existing files are left untouched) and run the new one:
 
 ```bash
-php artisan vendor:publish --provider=CodeTech\EuPago\Providers\EuPagoServiceProvider --tag=migrations
+php artisan vendor:publish --provider=CodeTech\\EuPago\\Providers\\EuPagoServiceProvider --tag=migrations
 php artisan migrate
 ```
 
@@ -22,6 +22,6 @@ This release drops support for PHP 7.x and Laravel 8.x. No changes to your appli
 This release adds Multibanco reference support, which uses a new `mb_references` table. Re-publish the migrations (existing files are left untouched) and run the new one:
 
 ```bash
-php artisan vendor:publish --provider=CodeTech\EuPago\Providers\EuPagoServiceProvider --tag=migrations
+php artisan vendor:publish --provider=CodeTech\\EuPago\\Providers\\EuPagoServiceProvider --tag=migrations
 php artisan migrate
 ```
