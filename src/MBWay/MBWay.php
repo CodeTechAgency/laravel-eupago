@@ -55,7 +55,7 @@ class MBWay extends EuPago
      * @param int $alias
      * @param string|null $description
      */
-    public function __construct(float $value, int $id, string $alias, string $description = null)
+    public function __construct(float $value, int $id, string $alias, ?string $description = null)
     {
         $this->value       = $value;
         $this->id          = $id;
