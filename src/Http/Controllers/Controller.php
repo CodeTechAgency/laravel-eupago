@@ -19,9 +19,16 @@ class Controller extends BaseController
      */
     protected function validateCallback(Request $request, array $rules): array
     {
+        $payload = $request->all();
+
+        if (array_key_exists('chave_api', $payload)) {
+            $payload['chave_api'] = '***';
+        }
+
+        // Log the path only (the query string also carries chave_api) with the key masked.
         Log::info('EuPago Callback', [
-            'url' => $request->fullUrl(),
-            'payload' => $request->all(),
+            'url' => $request->url(),
+            'payload' => $payload,
         ]);
 
         $validator = Validator::make($request->all(), $rules);
