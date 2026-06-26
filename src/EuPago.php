@@ -4,7 +4,7 @@ namespace CodeTech\EuPago;
 
 use Illuminate\Support\Facades\Http;
 
-abstract class EuPago
+class EuPago
 {
     /**
      * The test endpoint
@@ -44,7 +44,11 @@ abstract class EuPago
     {
         $response = Http::asForm()->post($this->getBaseUri() . static::URI, $this->getParams())->throw();
 
-        $referenceData = $response->json() ?? [];
+        $referenceData = $response->json();
+
+        if (!is_array($referenceData)) {
+            $referenceData = [];
+        }
 
         if (!($referenceData['sucesso'] ?? false)) {
             $this->addError($referenceData['estado'] ?? null, $referenceData['resposta'] ?? null);
@@ -81,21 +85,27 @@ abstract class EuPago
      */
     protected function addError($code, $message)
     {
-        $this->errors[$code] = html_entity_decode((string) $message);
+        $this->errors[$code ?? 'unknown'] = html_entity_decode((string) $message);
     }
 
     /**
-     * Returns the params required for the create request.
+     * Returns the params required for the create request. Payment methods override this.
      *
      * @return array
      */
-    abstract protected function getParams(): array;
+    protected function getParams(): array
+    {
+        throw new \BadMethodCallException(static::class . ' must implement getParams().');
+    }
 
     /**
-     * Maps the raw EuPago response to normalized keys.
+     * Maps the raw EuPago response to normalized keys. Payment methods override this.
      *
      * @param array $referenceData
      * @return array
      */
-    abstract protected function mappedReferenceKeys(array $referenceData): array;
+    protected function mappedReferenceKeys(array $referenceData): array
+    {
+        throw new \BadMethodCallException(static::class . ' must implement mappedReferenceKeys().');
+    }
 }
