@@ -65,10 +65,12 @@ jobs:
 
       - name: Install production dependencies only
         run: |
-          # --no-dev installs only the require deps (the illuminate/* components),
-          # so laravel/framework isn't present to mask them via `replace`.
           composer config --no-plugins policy.advisories.block false
-          composer update --prefer-dist --no-interaction --no-progress --no-dev
+          # Drop the dev deps before resolving: Testbench pulls laravel/framework,
+          # which `replace`s the individual illuminate/* packages and masks them.
+          # (`--no-dev` only skips install, not resolution, so it isn't enough.)
+          composer remove --dev --no-update $(jq -r '."require-dev" | keys[]' composer.json)
+          composer update --prefer-dist --no-interaction --no-progress
 
       - name: Check for missing dependencies
         run: |
