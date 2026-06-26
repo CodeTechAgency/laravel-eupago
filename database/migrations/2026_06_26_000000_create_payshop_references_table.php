@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('payshop_references', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('reference')->unique();
-            $table->float('value', 10, 2)->default(0);
+            $table->decimal('value', 10, 2)->default(0);
             $table->integer('state')->default(0);
             $table->morphs('payshopable');
             $table->timestamps();
