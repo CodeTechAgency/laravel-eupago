@@ -3,7 +3,7 @@
 namespace CodeTech\EuPago\MBWay;
 
 use CodeTech\EuPago\EuPago;
-use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 
 class MBWay extends EuPago
 {
@@ -98,14 +98,13 @@ class MBWay extends EuPago
      * Generates a new MBWay reference.
      *
      * @return mixed
+     * @throws \Illuminate\Http\Client\ConnectionException
      */
     public function create()
     {
-        $client = new Client(['base_uri' => $this->getBaseUri()]);
+        $response = Http::asForm()->post($this->getBaseUri() . self::URI, $this->getParams())->throw();
 
-        $response = $client->post(self::URI, $this->getParams());
-
-        $referenceData = json_decode($response->getBody()->getContents(), true);
+        $referenceData = $response->json();
 
         if (!$referenceData['sucesso']) {
             $this->addError($referenceData['estado'], $referenceData['resposta']);
@@ -140,13 +139,11 @@ class MBWay extends EuPago
     protected function getParams(): array
     {
         return [
-            'form_params' => [
-                'chave' => config('eupago.api_key'),
-                'valor' => $this->value,
-                'id' => $this->id,
-                'alias' => $this->alias,
-                'descricao' => $this->description,
-            ]
+            'chave' => config('eupago.api_key'),
+            'valor' => $this->value,
+            'id' => $this->id,
+            'alias' => $this->alias,
+            'descricao' => $this->description,
         ];
     }
 }

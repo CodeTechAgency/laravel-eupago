@@ -4,7 +4,7 @@ namespace CodeTech\EuPago\MB;
 
 use Carbon\Carbon;
 use CodeTech\EuPago\EuPago;
-use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 
 class MB extends EuPago
 {
@@ -123,22 +123,16 @@ class MB extends EuPago
     }
 
     /**
-     * Generates a new MBWay reference.
+     * Generates a new MB reference.
      *
      * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Illuminate\Http\Client\ConnectionException
      */
     public function create(): array
     {
-        $client = new Client(['base_uri' => $this->getBaseUri()]);
+        $response = Http::asForm()->post($this->getBaseUri() . self::URI, $this->getParams())->throw();
 
-        try {
-            $response = $client->post(self::URI, $this->getParams());
-        } catch (\Exception $e) {
-            throw $e;
-        }
-
-        $referenceData = json_decode($response->getBody()->getContents(), true);
+        $referenceData = $response->json();
 
         if (!$referenceData['sucesso']) {
             $this->addError($referenceData['estado'], $referenceData['resposta']);
@@ -177,16 +171,14 @@ class MB extends EuPago
     protected function getParams(): array
     {
         return [
-            'form_params' => [
-                'chave' => config('eupago.api_key'),
-                'valor' => $this->value,
-                'id' => $this->id,
-                'data_inicio' => $this->startDate,
-                'data_fim' => $this->endDate,
-                'valor_minimo' => $this->minValue,
-                'valor_maximo' => $this->maxValue,
-                'per_dup' => $this->allowDuplication,
-            ]
+            'chave' => config('eupago.api_key'),
+            'valor' => $this->value,
+            'id' => $this->id,
+            'data_inicio' => $this->startDate,
+            'data_fim' => $this->endDate,
+            'valor_minimo' => $this->minValue,
+            'valor_maximo' => $this->maxValue,
+            'per_dup' => $this->allowDuplication,
         ];
     }
 }
