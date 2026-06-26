@@ -51,8 +51,8 @@ class MBWay extends EuPago
      * MBWay constructor.
      *
      * @param float $value
-     * @param string $id
-     * @param int $alias
+     * @param int $id
+     * @param string $alias
      * @param string|null $description
      */
     public function __construct(float $value, int $id, string $alias, ?string $description = null)
