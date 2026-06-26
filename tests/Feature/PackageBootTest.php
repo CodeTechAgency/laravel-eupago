@@ -7,5 +7,6 @@ it('merges the eupago config when the package boots', function () {
 
 it('registers the eupago callback routes', function () {
     expect(app('router')->has('eupago.mb.callback'))->toBeTrue()
-        ->and(app('router')->has('eupago.mbway.callback'))->toBeTrue();
+        ->and(app('router')->has('eupago.mbway.callback'))->toBeTrue()
+        ->and(app('router')->has('eupago.payshop.callback'))->toBeTrue();
 });

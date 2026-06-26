@@ -2,6 +2,7 @@
 
 use CodeTech\EuPago\Models\MbReference;
 use CodeTech\EuPago\Models\MbwayReference;
+use CodeTech\EuPago\Models\PayShopReference;
 use CodeTech\EuPago\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);
@@ -84,5 +85,36 @@ function validMbwayCallbackPayload(array $overrides = []): array
         'data' => now()->format('Y-m-d:H:i:s'),
         'entidade' => '54321',
         'comissao' => '0.30',
+    ], $overrides);
+}
+
+function createPendingPayShopReference(array $overrides = []): PayShopReference
+{
+    $reference = new PayShopReference(array_merge([
+        'reference' => 555444333,
+        'value' => 20.00,
+        'state' => 0,
+    ], $overrides));
+
+    $reference->payshopable_id = 1;
+    $reference->payshopable_type = 'Tests\\Dummy';
+    $reference->save();
+
+    return $reference;
+}
+
+function validPayShopCallbackPayload(array $overrides = []): array
+{
+    return array_merge([
+        'valor' => '20.00',
+        'canal' => config('eupago.channel'),
+        'referencia' => '555444333',
+        'transacao' => 'TXN555',
+        'identificador' => 'ID555',
+        'mp' => 'PS',
+        'chave_api' => config('eupago.api_key'),
+        'data' => now()->format('Y-m-d:H:i:s'),
+        'entidade' => '00000',
+        'comissao' => '0.20',
     ], $overrides);
 }
