@@ -97,10 +97,11 @@ class MBWay extends EuPago
     /**
      * Generates a new MBWay reference.
      *
-     * @return mixed
+     * @return array
      * @throws \Illuminate\Http\Client\ConnectionException
+     * @throws \Illuminate\Http\Client\RequestException
      */
-    public function create()
+    public function create(): array
     {
         $response = Http::asForm()->post($this->getBaseUri() . self::URI, $this->getParams())->throw();
 
