@@ -9,7 +9,7 @@ use Illuminate\Queue\SerializesModels;
 
 class MBWayReferencePaid
 {
-    use InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * The MBWay reference object.

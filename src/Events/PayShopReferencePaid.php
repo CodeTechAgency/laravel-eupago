@@ -9,7 +9,7 @@ use Illuminate\Queue\SerializesModels;
 
 class PayShopReferencePaid
 {
-    use InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * The PayShop reference object.

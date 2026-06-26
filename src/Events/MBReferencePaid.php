@@ -9,7 +9,7 @@ use Illuminate\Queue\SerializesModels;
 
 class MBReferencePaid
 {
-    use InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * The MbReference reference object.
