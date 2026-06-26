@@ -203,6 +203,93 @@ GET
 
 
 
+### PayShop References
+
+#### Usage
+
+For creating a PayShop reference, take the following example:
+```
+use CodeTech\EuPago\PayShop\PayShop;
+
+$order = Order::find(1);
+
+$payShop = new PayShop(
+    $order->value,
+    $order->id
+);
+
+try {
+    // Make the request to EUPago's API
+    $payShopReferenceData = $payShop->create();
+
+    if ($payShop->hasErrors()) {
+        // handle errors
+    }
+
+    $order->payShopReferences()->create($payShopReferenceData);
+} catch (\Exception $e) {
+    // handle exception
+}
+```
+
+`$payShopReferenceData` will contain all the information about the payment:
+```
+[
+    'success' => true,
+    'state' => 0,
+    'response' => "OK",
+    'reference' => 1800000132722,
+    'value' => "10.00000",
+]
+```
+
+Use the trait on the models for which you want to generate PayShop references:
+
+```
+
+use CodeTech\EuPago\Traits\PayShopable;
+
+class Order extends Model
+{
+    use PayShopable;
+
+```
+
+Retrieve the PayShop references:
+
+```
+$order = Order::find(1);
+
+$payShopReferences = $order->payShopReferences;
+```
+
+#### Callback
+
+The package already handles the callback, updating the payment reference state and triggering a `PayShopReferencePaid` event.
+
+```
+GET
+
+/eupago/payshop/callback
+```
+
+#### Params
+
+| Name          | Type      |
+|---------------|:---------:|
+| valor         | float     |
+| canal         | string    |
+| referencia    | string    |
+| transacao     | string    |
+| identificador | integer   |
+| mp            | string    |
+| chave_api     | string    |
+| data          | date time |
+| entidade      | string    |
+| comissao      | float     |
+| local         | string    |
+
+
 ---
 
 
