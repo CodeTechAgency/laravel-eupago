@@ -4,7 +4,6 @@ namespace CodeTech\EuPago\MB;
 
 use Carbon\Carbon;
 use CodeTech\EuPago\EuPago;
-use Illuminate\Support\Facades\Http;
 
 class MB extends EuPago
 {
@@ -23,7 +22,7 @@ class MB extends EuPago
     /**
      * External identifier. Ex: the order id.
      *
-     * @var int
+     * @var string
      */
     protected $id;
 
@@ -63,13 +62,6 @@ class MB extends EuPago
     protected $allowDuplication;
 
     /**
-     * The errors stored during the operations.
-     *
-     * @var array
-     */
-    protected $errors = [];
-
-    /**
      * MB constructor.
      *
      * @param float $value
@@ -89,57 +81,6 @@ class MB extends EuPago
         $this->minValue         = $minValue;
         $this->maxValue         = $maxValue;
         $this->allowDuplication = $allowDuplication;
-    }
-
-    /**
-     * Returns the errors.
-     *
-     * @return array
-     */
-    public function getErrors(): array
-    {
-        return $this->errors;
-    }
-
-    /**
-     * Adds an error to the bag.
-     *
-     * @param $code
-     * @param $message
-     */
-    protected function addError($code, $message)
-    {
-        $this->errors[$code] = html_entity_decode($message);
-    }
-
-    /**
-     * Determines whether errors are logged.
-     *
-     * @return bool
-     */
-    public function hasErrors()
-    {
-        return count($this->errors) > 0;
-    }
-
-    /**
-     * Generates a new MB reference.
-     *
-     * @return array
-     * @throws \Illuminate\Http\Client\ConnectionException
-     * @throws \Illuminate\Http\Client\RequestException
-     */
-    public function create(): array
-    {
-        $response = Http::asForm()->post($this->getBaseUri() . self::URI, $this->getParams())->throw();
-
-        $referenceData = $response->json();
-
-        if (!$referenceData['sucesso']) {
-            $this->addError($referenceData['estado'], $referenceData['resposta']);
-        }
-
-        return $this->mappedReferenceKeys($referenceData);
     }
 
     /**

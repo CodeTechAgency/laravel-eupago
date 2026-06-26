@@ -30,6 +30,27 @@ it('sends the PayShop creation request with the configured credentials', functio
         && $request['valor'] == 20.00);
 });
 
+it('handles a malformed 2xx response body gracefully', function () {
+    Http::fake(['*' => Http::response('not valid json', 200)]);
+
+    $payShop = new PayShop(20.00, '555');
+    $result = $payShop->create();
+
+    expect($payShop->hasErrors())->toBeTrue()
+        ->and($payShop->getErrors())->toHaveKey('unknown')
+        ->and($result['reference'])->toBeNull();
+});
+
+it('handles a scalar JSON response gracefully', function () {
+    Http::fake(['*' => Http::response('"just a string"', 200)]);
+
+    $payShop = new PayShop(20.00, '555');
+    $result = $payShop->create();
+
+    expect($payShop->hasErrors())->toBeTrue()
+        ->and($result['reference'])->toBeNull();
+});
+
 it('throws when the PayShop API returns a server error', function () {
     Http::fake(['*' => Http::response('Server Error', 500)]);
 

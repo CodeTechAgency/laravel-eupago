@@ -3,7 +3,6 @@
 namespace CodeTech\EuPago\MBWay;
 
 use CodeTech\EuPago\EuPago;
-use Illuminate\Support\Facades\Http;
 
 class MBWay extends EuPago
 {
@@ -41,13 +40,6 @@ class MBWay extends EuPago
     protected $description;
 
     /**
-     * The errors stored during the operations.
-     *
-     * @var array
-     */
-    protected $errors = [];
-
-    /**
      * MBWay constructor.
      *
      * @param float $value
@@ -61,57 +53,6 @@ class MBWay extends EuPago
         $this->id          = $id;
         $this->alias       = $alias;
         $this->description = $description;
-    }
-
-    /**
-     * Returns the errors.
-     *
-     * @return array
-     */
-    public function getErrors(): array
-    {
-        return $this->errors;
-    }
-
-    /**
-     * Adds an error to the bag.
-     *
-     * @param $code
-     * @param $message
-     */
-    protected function addError($code, $message)
-    {
-        $this->errors[$code] = html_entity_decode($message);
-    }
-
-    /**
-     * Determines whether errors are logged.
-     *
-     * @return bool
-     */
-    public function hasErrors()
-    {
-        return count($this->errors) > 0;
-    }
-
-    /**
-     * Generates a new MBWay reference.
-     *
-     * @return array
-     * @throws \Illuminate\Http\Client\ConnectionException
-     * @throws \Illuminate\Http\Client\RequestException
-     */
-    public function create(): array
-    {
-        $response = Http::asForm()->post($this->getBaseUri() . self::URI, $this->getParams())->throw();
-
-        $referenceData = $response->json();
-
-        if (!$referenceData['sucesso']) {
-            $this->addError($referenceData['estado'], $referenceData['resposta']);
-        }
-
-        return $this->mappedReferenceKeys($referenceData);
     }
 
     /**
