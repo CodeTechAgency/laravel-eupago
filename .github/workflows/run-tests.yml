@@ -47,3 +47,32 @@ jobs:
 
       - name: Run tests
         run: vendor/bin/pest
+
+  dependency-check:
+    runs-on: ubuntu-latest
+    name: Dependency check
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: dom, curl, libxml, mbstring, fileinfo, pdo, sqlite3, pdo_sqlite
+          coverage: none
+
+      - name: Install production dependencies only
+        run: |
+          composer config --no-plugins policy.advisories.block false
+          # Drop the dev deps before resolving: Testbench pulls laravel/framework,
+          # which `replace`s the individual illuminate/* packages and masks them.
+          # (`--no-dev` only skips install, not resolution, so it isn't enough.)
+          composer remove --dev --no-update $(jq -r '."require-dev" | keys[]' composer.json)
+          composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Check for missing dependencies
+        run: |
+          curl -fsSL https://github.com/maglnet/ComposerRequireChecker/releases/download/4.20.0/composer-require-checker.phar -o composer-require-checker.phar
+          php composer-require-checker.phar check --config-file=composer-require-checker.json composer.json

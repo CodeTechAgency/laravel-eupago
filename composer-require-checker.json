@@ -1,0 +1,10 @@
+{
+    "symbol-whitelist": [
+        "config",
+        "config_path",
+        "database_path",
+        "event",
+        "resource_path",
+        "response"
+    ]
+}
