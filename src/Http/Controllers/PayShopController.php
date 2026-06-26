@@ -5,18 +5,19 @@ namespace CodeTech\EuPago\Http\Controllers;
 use CodeTech\EuPago\Events\PayShopReferencePaid;
 use CodeTech\EuPago\Http\Requests\PayShopCallbackRequest;
 use CodeTech\EuPago\Models\PayShopReference;
+use Illuminate\Http\Request;
 
 class PayShopController extends Controller
 {
     /**
      * This endpoint is called when a PayShop reference is paid.
      *
-     * @param PayShopCallbackRequest $request
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse|object
      */
-    public function callback(PayShopCallbackRequest $request)
+    public function callback(Request $request)
     {
-        $validatedData = $request->validated();
+        $validatedData = $this->validateCallback($request, (new PayShopCallbackRequest)->rules());
 
         $reference = PayShopReference::where('reference', $validatedData['referencia'])
             ->where('value', $validatedData['valor'])

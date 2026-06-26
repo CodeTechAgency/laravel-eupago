@@ -5,18 +5,19 @@ namespace CodeTech\EuPago\Http\Controllers;
 use CodeTech\EuPago\Events\MBReferencePaid;
 use CodeTech\EuPago\Http\Requests\MbCallbackRequest;
 use CodeTech\EuPago\Models\MbReference;
+use Illuminate\Http\Request;
 
 class MBController extends Controller
 {
     /**
      * This endpoint is called when a MB reference is paid.
      *
-     * @param MbCallbackRequest $request
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse|object
      */
-    public function callback(MbCallbackRequest $request)
+    public function callback(Request $request)
     {
-        $validatedData = $request->validated();
+        $validatedData = $this->validateCallback($request, (new MbCallbackRequest)->rules());
 
         $reference = MbReference::where('reference', $validatedData['referencia'])
             ->where('value', $validatedData['valor'])

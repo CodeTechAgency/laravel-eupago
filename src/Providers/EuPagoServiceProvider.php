@@ -2,6 +2,7 @@
 
 namespace CodeTech\EuPago\Providers;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class EuPagoServiceProvider extends ServiceProvider
@@ -14,14 +15,12 @@ class EuPagoServiceProvider extends ServiceProvider
     public function register()
     {
         $this->setConfigurations();
-
-        $this->setProviders();
     }
 
     /**
      * Bootstrap services.
      *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @return void
      */
     public function boot()
     {
@@ -29,6 +28,8 @@ class EuPagoServiceProvider extends ServiceProvider
 
         // Load translations from custom path
         $this->loadTranslationsFrom(__DIR__ . '/../../resources/lang', 'eupago');
+
+        $this->loadRoutes();
     }
 
     /**
@@ -42,11 +43,18 @@ class EuPagoServiceProvider extends ServiceProvider
     }
 
     /**
-     * Sets the custom providers.
+     * Loads the package routes.
      */
-    private function setProviders()
+    private function loadRoutes()
     {
-        $this->app->register('CodeTech\EuPago\Providers\RouteServiceProvider');
+        if ($this->app->routesAreCached()) {
+            return;
+        }
+
+        Route::middleware('web')
+            ->prefix('eupago')
+            ->name('eupago.')
+            ->group(__DIR__ . '/../../routes/web.php');
     }
 
     /**

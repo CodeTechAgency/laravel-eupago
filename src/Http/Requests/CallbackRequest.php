@@ -2,40 +2,17 @@
 
 namespace CodeTech\EuPago\Http\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
-abstract class CallbackRequest extends FormRequest
+abstract class CallbackRequest
 {
-
     /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
+     * Get the validation rules that apply to the callback.
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
-        Log::info(
-            'EuPago Callback',
-            [
-                'url' => $this->fullUrl(),
-                'payload' => $this->all()
-            ]
-        );
-
         return [
             'valor' => 'required',
             'canal' => [
@@ -56,15 +33,4 @@ abstract class CallbackRequest extends FormRequest
             'local' => 'nullable',
         ];
     }
-
-    /**
-     * Failed validation disable redirect
-     *
-     * @param Validator $validator
-     */
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json($validator->errors(), 422));
-    }
-
 }

@@ -6,28 +6,17 @@ use Illuminate\Validation\Rule;
 
 class MbWayCallbackRequest extends CallbackRequest
 {
-
     /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
+     * Get the validation rules that apply to the callback.
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
-        $parentRules = parent::rules();
+        $rules = parent::rules();
 
-        $parentRules['referencia'][] = Rule::exists('mbway_references', 'reference');
+        $rules['referencia'][] = Rule::exists('mbway_references', 'reference');
 
-        return $parentRules;
+        return $rules;
     }
 }

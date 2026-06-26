@@ -5,12 +5,11 @@ namespace CodeTech\EuPago\Events;
 use CodeTech\EuPago\Models\MbReference;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 class MBReferencePaid
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use InteractsWithSockets, SerializesModels;
 
     /**
      * The MbReference reference object.
