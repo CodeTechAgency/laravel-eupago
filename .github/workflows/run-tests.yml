@@ -93,7 +93,11 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: composer update --prefer-dist --no-interaction --no-progress
+        run: |
+          # Testbench pulls laravel/framework, whose supported versions carry
+          # unpatched advisories (Laravel 10 is EOL); allow installing them.
+          composer config --no-plugins policy.advisories.block false
+          composer update --prefer-dist --no-interaction --no-progress
 
       - name: Check code style (Pint)
         run: composer lint
