@@ -76,3 +76,31 @@ jobs:
         run: |
           curl -fsSL https://github.com/maglnet/ComposerRequireChecker/releases/download/4.20.0/composer-require-checker.phar -o composer-require-checker.phar
           php composer-require-checker.phar check --config-file=composer-require-checker.json composer.json
+
+  quality:
+    runs-on: ubuntu-latest
+    name: Code quality
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: dom, curl, libxml, mbstring, fileinfo, pdo, sqlite3, pdo_sqlite
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          # Testbench pulls laravel/framework, whose supported versions carry
+          # unpatched advisories (Laravel 10 is EOL); allow installing them.
+          composer config --no-plugins policy.advisories.block false
+          composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Check code style (Pint)
+        run: composer lint
+
+      - name: Run static analysis (PHPStan)
+        run: composer analyse

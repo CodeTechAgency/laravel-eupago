@@ -8,8 +8,6 @@ class MbWayCallbackRequest extends CallbackRequest
 {
     /**
      * Get the validation rules that apply to the callback.
-     *
-     * @return array
      */
     public function rules(): array
     {

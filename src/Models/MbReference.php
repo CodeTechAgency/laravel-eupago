@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class MbReference extends Model
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $fillable = [
         'entity',
@@ -25,7 +25,6 @@ class MbReference extends Model
         'end_date' => 'date',
     ];
 
-
     /*
     |--------------------------------------------------------------------------
     | Scopes
@@ -35,14 +34,12 @@ class MbReference extends Model
     /**
      * Scopes a query to only include paid references.
      *
-     * @param $query
      * @return mixed
      */
     public function scopePaid($query)
     {
         return $query->where('state', 1);
     }
-
 
     /*
     |--------------------------------------------------------------------------

@@ -5,6 +5,9 @@ namespace CodeTech\EuPago\Traits;
 use Carbon\Carbon;
 use CodeTech\EuPago\MB\MB;
 use CodeTech\EuPago\Models\MbReference;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
 
 trait Mbable
 {
@@ -21,16 +24,10 @@ trait Mbable
     /**
      * Creates and persists an MB reference.
      *
-     * @param float $value
-     * @param string $id
-     * @param Carbon $startDate
-     * @param Carbon $endDate
-     * @param float $minValue
-     * @param float $maxValue
-     * @param bool $allowDuplication
-     * @return \Illuminate\Database\Eloquent\Model|array the persisted reference, or the errors on failure
-     * @throws \Illuminate\Http\Client\ConnectionException
-     * @throws \Illuminate\Http\Client\RequestException
+     * @return Model|array the persisted reference, or the errors on failure
+     *
+     * @throws ConnectionException
+     * @throws RequestException
      */
     public function createMbReference(float $value, string $id, Carbon $startDate, Carbon $endDate, float $minValue, float $maxValue, bool $allowDuplication = false)
     {

@@ -57,37 +57,26 @@ class MB extends EuPago
     /**
      * Indicates if duplicated payments are allowed.
      *
-     * @var boolean
+     * @var bool
      */
     protected $allowDuplication;
 
     /**
      * MB constructor.
-     *
-     * @param float $value
-     * @param string $id
-     * @param Carbon $startDate
-     * @param Carbon $endDate
-     * @param float $minValue
-     * @param float $maxValue
-     * @param bool $allowDuplication
      */
     public function __construct(float $value, string $id, Carbon $startDate, Carbon $endDate, float $minValue, float $maxValue, bool $allowDuplication = false)
     {
-        $this->value            = $value;
-        $this->id               = $id;
-        $this->startDate        = $startDate->format('Y-m-d');
-        $this->endDate          = $endDate->format('Y-m-d');
-        $this->minValue         = $minValue;
-        $this->maxValue         = $maxValue;
+        $this->value = $value;
+        $this->id = $id;
+        $this->startDate = $startDate->format('Y-m-d');
+        $this->endDate = $endDate->format('Y-m-d');
+        $this->minValue = $minValue;
+        $this->maxValue = $maxValue;
         $this->allowDuplication = $allowDuplication;
     }
 
     /**
      * Maps the reference data keys.
-     *
-     * @param array $referenceData
-     * @return array
      */
     protected function mappedReferenceKeys(array $referenceData): array
     {
@@ -107,8 +96,6 @@ class MB extends EuPago
 
     /**
      * Returns the required params for making a request.
-     *
-     * @return array
      */
     protected function getParams(): array
     {

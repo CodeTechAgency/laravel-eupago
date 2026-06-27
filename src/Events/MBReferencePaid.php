@@ -3,6 +3,7 @@
 namespace CodeTech\EuPago\Events;
 
 use CodeTech\EuPago\Models\MbReference;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Queue\SerializesModels;
@@ -20,8 +21,6 @@ class MBReferencePaid
 
     /**
      * MBReferencePaid constructor.
-     *
-     * @param MbReference $reference
      */
     public function __construct(MbReference $reference)
     {
@@ -31,7 +30,7 @@ class MBReferencePaid
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * @return Channel|array
      */
     public function broadcastOn()
     {

@@ -12,10 +12,6 @@ class Controller extends BaseController
 {
     /**
      * Logs and validates an incoming EuPago callback, returning the validated data.
-     *
-     * @param Request $request
-     * @param array $rules
-     * @return array
      */
     protected function validateCallback(Request $request, array $rules): array
     {

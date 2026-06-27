@@ -2,6 +2,8 @@
 
 namespace CodeTech\EuPago;
 
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 
 class EuPago
@@ -15,6 +17,11 @@ class EuPago
      * The production endpoint
      */
     const PROD_ENDPOINT = 'https://clientes.eupago.pt';
+
+    /**
+     * The create endpoint for the payment method. Each payment method overrides this.
+     */
+    const URI = '';
 
     /**
      * The reference-info endpoint used by status().
@@ -48,21 +55,20 @@ class EuPago
     /**
      * Generates a new reference.
      *
-     * @return array
-     * @throws \Illuminate\Http\Client\ConnectionException
-     * @throws \Illuminate\Http\Client\RequestException
+     * @throws ConnectionException
+     * @throws RequestException
      */
     public function create(): array
     {
-        $response = Http::asForm()->post($this->getBaseUri() . static::URI, $this->getParams())->throw();
+        $response = Http::asForm()->post($this->getBaseUri().static::URI, $this->getParams())->throw();
 
         $referenceData = $response->json();
 
-        if (!is_array($referenceData)) {
+        if (! is_array($referenceData)) {
             $referenceData = [];
         }
 
-        if (!($referenceData['sucesso'] ?? false)) {
+        if (! ($referenceData['sucesso'] ?? false)) {
             $this->addError($referenceData['estado'] ?? null, $referenceData['resposta'] ?? null);
         }
 
@@ -72,11 +78,8 @@ class EuPago
     /**
      * Queries the current status of an existing reference.
      *
-     * @param string $reference
-     * @param string|null $entity
-     * @return array
-     * @throws \Illuminate\Http\Client\ConnectionException
-     * @throws \Illuminate\Http\Client\RequestException
+     * @throws ConnectionException
+     * @throws RequestException
      */
     public function status(string $reference, ?string $entity = null): array
     {
@@ -89,15 +92,15 @@ class EuPago
             $params['entidade'] = $entity;
         }
 
-        $response = Http::asForm()->post($this->getBaseUri() . static::STATUS_URI, $params)->throw();
+        $response = Http::asForm()->post($this->getBaseUri().static::STATUS_URI, $params)->throw();
 
         $statusData = $response->json();
 
-        if (!is_array($statusData)) {
+        if (! is_array($statusData)) {
             $statusData = [];
         }
 
-        if (!($statusData['sucesso'] ?? false)) {
+        if (! ($statusData['sucesso'] ?? false)) {
             $this->addError($statusData['estado'] ?? null, $statusData['resposta'] ?? null);
         }
 
@@ -106,8 +109,6 @@ class EuPago
 
     /**
      * Returns the errors.
-     *
-     * @return array
      */
     public function getErrors(): array
     {
@@ -116,8 +117,6 @@ class EuPago
 
     /**
      * Determines whether any errors were stored.
-     *
-     * @return bool
      */
     public function hasErrors(): bool
     {
@@ -126,9 +125,6 @@ class EuPago
 
     /**
      * Adds an error to the bag.
-     *
-     * @param $code
-     * @param $message
      */
     protected function addError($code, $message)
     {
@@ -137,30 +133,22 @@ class EuPago
 
     /**
      * Returns the params required for the create request. Payment methods override this.
-     *
-     * @return array
      */
     protected function getParams(): array
     {
-        throw new \BadMethodCallException(static::class . ' must implement getParams().');
+        throw new \BadMethodCallException(static::class.' must implement getParams().');
     }
 
     /**
      * Maps the raw EuPago response to normalized keys. Payment methods override this.
-     *
-     * @param array $referenceData
-     * @return array
      */
     protected function mappedReferenceKeys(array $referenceData): array
     {
-        throw new \BadMethodCallException(static::class . ' must implement mappedReferenceKeys().');
+        throw new \BadMethodCallException(static::class.' must implement mappedReferenceKeys().');
     }
 
     /**
      * Maps the raw reference-status response to normalized keys.
-     *
-     * @param array $statusData
-     * @return array
      */
     protected function mappedStatusKeys(array $statusData): array
     {

@@ -27,7 +27,7 @@ class EuPagoServiceProvider extends ServiceProvider
         $this->setPublishableFiles();
 
         // Load translations from custom path
-        $this->loadTranslationsFrom(__DIR__ . '/../../resources/lang', 'eupago');
+        $this->loadTranslationsFrom(__DIR__.'/../../resources/lang', 'eupago');
 
         $this->loadRoutes();
     }
@@ -38,7 +38,7 @@ class EuPagoServiceProvider extends ServiceProvider
     private function setConfigurations()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../../config/eupago.php', 'eupago'
+            __DIR__.'/../../config/eupago.php', 'eupago'
         );
     }
 
@@ -54,7 +54,7 @@ class EuPagoServiceProvider extends ServiceProvider
         Route::middleware('web')
             ->prefix('eupago')
             ->name('eupago.')
-            ->group(__DIR__ . '/../../routes/web.php');
+            ->group(__DIR__.'/../../routes/web.php');
     }
 
     /**
@@ -63,15 +63,15 @@ class EuPagoServiceProvider extends ServiceProvider
     private function setPublishableFiles()
     {
         $this->publishes([
-            __DIR__ . '/../../database/migrations/' => database_path('migrations')
+            __DIR__.'/../../database/migrations/' => database_path('migrations'),
         ], 'migrations');
 
         $this->publishes([
-            __DIR__ . '/../../resources/lang' => resource_path('lang/vendor/eupago'),
+            __DIR__.'/../../resources/lang' => resource_path('lang/vendor/eupago'),
         ], 'translations');
 
         $this->publishes([
-            __DIR__ . '/../../config/eupago.php' => config_path('eupago.php'),
+            __DIR__.'/../../config/eupago.php' => config_path('eupago.php'),
         ], 'config');
     }
 }
