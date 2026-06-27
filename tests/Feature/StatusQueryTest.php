@@ -40,6 +40,21 @@ it('sends the status request with the configured credentials and reference', fun
         && $request['entidade'] === '12345');
 });
 
+it('routes any reference type through the single info endpoint', function () {
+    Http::fake(['*' => Http::response([
+        'referencia' => '1800000132722',
+        'estado_referencia' => 'pago',
+        'sucesso' => true,
+    ])]);
+
+    // A PayShop reference resolves through the same endpoint as MB.
+    $result = (new EuPago)->status('1800000132722');
+
+    Http::assertSent(fn ($request) => str_contains($request->url(), 'multibanco/info'));
+    expect($result['reference'])->toBe('1800000132722')
+        ->and($result['reference_state'])->toBe('pago');
+});
+
 it('omits the entity from the request when none is provided', function () {
     Http::fake(['*' => Http::response(['sucesso' => true])]);
 

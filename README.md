@@ -297,8 +297,9 @@ GET
 ## Querying reference status
 
 Besides the callback, you can query a reference's current status on demand — useful
-for reconciliation or when a callback is missed or delayed. This works for any
-reference type (MB, MB Way, PayShop):
+for reconciliation or when a callback is missed or delayed. EuPago resolves any
+reference type (MB, MB Way, PayShop) through a single reference-info endpoint, so
+the same call works regardless of how the reference was created:
 
 ```
 use CodeTech\EuPago\EuPago;

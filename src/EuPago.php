@@ -17,7 +17,14 @@ class EuPago
     const PROD_ENDPOINT = 'https://clientes.eupago.pt';
 
     /**
-     * The reference status (info) endpoint, shared across reference types.
+     * The reference-info endpoint used by status().
+     *
+     * EuPago exposes a single reference-info endpoint, keyed by entidade +
+     * referencia, that resolves any reference type — MB, MB Way and PayShop
+     * references all query through it (verified against the live API). Despite
+     * the "multibanco" path segment, it is not Multibanco-specific. Subclasses
+     * may override this constant should a method ever require a dedicated
+     * endpoint.
      */
     const STATUS_URI = '/clientes/rest_api/multibanco/info';
 
@@ -82,7 +89,7 @@ class EuPago
             $params['entidade'] = $entity;
         }
 
-        $response = Http::asForm()->post($this->getBaseUri() . self::STATUS_URI, $params)->throw();
+        $response = Http::asForm()->post($this->getBaseUri() . static::STATUS_URI, $params)->throw();
 
         $statusData = $response->json();
 
