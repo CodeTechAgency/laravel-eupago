@@ -8,8 +8,6 @@ abstract class CallbackRequest
 {
     /**
      * Get the validation rules that apply to the callback.
-     *
-     * @return array
      */
     public function rules(): array
     {
@@ -17,7 +15,7 @@ abstract class CallbackRequest
             'valor' => 'required',
             'canal' => [
                 'required',
-                Rule::in([config('eupago.channel')])
+                Rule::in([config('eupago.channel')]),
             ],
             'referencia' => ['required'],
             'transacao' => 'required',
@@ -25,7 +23,7 @@ abstract class CallbackRequest
             'mp' => 'required',
             'chave_api' => [
                 'required',
-                Rule::in([config('eupago.api_key')])
+                Rule::in([config('eupago.api_key')]),
             ],
             'data' => 'required|date_format:Y-m-d:H:i:s',
             'entidade' => 'required',

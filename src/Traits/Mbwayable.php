@@ -4,6 +4,9 @@ namespace CodeTech\EuPago\Traits;
 
 use CodeTech\EuPago\MBWay\MBWay;
 use CodeTech\EuPago\Models\MbwayReference;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
 
 trait Mbwayable
 {
@@ -20,13 +23,10 @@ trait Mbwayable
     /**
      * Creates and persists an MB Way reference.
      *
-     * @param float $value
-     * @param int $id
-     * @param string $alias
-     * @param string|null $description
-     * @return \Illuminate\Database\Eloquent\Model|array the persisted reference, or the errors on failure
-     * @throws \Illuminate\Http\Client\ConnectionException
-     * @throws \Illuminate\Http\Client\RequestException
+     * @return Model|array the persisted reference, or the errors on failure
+     *
+     * @throws ConnectionException
+     * @throws RequestException
      */
     public function createMbwayReference(float $value, int $id, string $alias, ?string $description = null)
     {

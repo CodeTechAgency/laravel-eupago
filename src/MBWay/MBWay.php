@@ -41,25 +41,17 @@ class MBWay extends EuPago
 
     /**
      * MBWay constructor.
-     *
-     * @param float $value
-     * @param int $id
-     * @param string $alias
-     * @param string|null $description
      */
     public function __construct(float $value, int $id, string $alias, ?string $description = null)
     {
-        $this->value       = $value;
-        $this->id          = $id;
-        $this->alias       = $alias;
+        $this->value = $value;
+        $this->id = $id;
+        $this->alias = $alias;
         $this->description = $description;
     }
 
     /**
      * Maps the reference data keys.
-     *
-     * @param array $referenceData
-     * @return array
      */
     protected function mappedReferenceKeys(array $referenceData): array
     {
@@ -75,8 +67,6 @@ class MBWay extends EuPago
 
     /**
      * Returns the required params for making a request.
-     *
-     * @return array
      */
     protected function getParams(): array
     {

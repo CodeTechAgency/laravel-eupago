@@ -3,17 +3,20 @@
 namespace CodeTech\EuPago\Traits;
 
 use CodeTech\EuPago\EuPago;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
 
 trait CreatesEuPagoReferences
 {
     /**
      * Runs the EuPago request and persists the reference on success.
      *
-     * @param EuPago $payment
-     * @param string $relation the relationship method that stores the reference
-     * @return \Illuminate\Database\Eloquent\Model|array the persisted reference, or the errors on failure
-     * @throws \Illuminate\Http\Client\ConnectionException
-     * @throws \Illuminate\Http\Client\RequestException
+     * @param  string  $relation  the relationship method that stores the reference
+     * @return Model|array the persisted reference, or the errors on failure
+     *
+     * @throws ConnectionException
+     * @throws RequestException
      */
     protected function persistReference(EuPago $payment, string $relation)
     {

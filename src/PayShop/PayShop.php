@@ -27,21 +27,15 @@ class PayShop extends EuPago
 
     /**
      * PayShop constructor.
-     *
-     * @param float $value
-     * @param string $id
      */
     public function __construct(float $value, string $id)
     {
         $this->value = $value;
-        $this->id    = $id;
+        $this->id = $id;
     }
 
     /**
      * Maps the reference data keys.
-     *
-     * @param array $referenceData
-     * @return array
      */
     protected function mappedReferenceKeys(array $referenceData): array
     {
@@ -56,8 +50,6 @@ class PayShop extends EuPago
 
     /**
      * Returns the required params for making a request.
-     *
-     * @return array
      */
     protected function getParams(): array
     {

@@ -1,0 +1,15 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - src
+
+    level: 5
+
+    ignoreErrors:
+        # The dispatch() helper intentionally uses new static(); the event
+        # classes are leaf classes and kept non-final for BC.
+        -
+            message: '#Unsafe usage of new static\(\)\.#'
+            path: src/Events/Dispatchable.php

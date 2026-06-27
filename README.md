@@ -355,6 +355,16 @@ The `$entity` argument is optional. `$status` is mapped to normalized keys, wher
 
 ---
 
+## Testing & code quality
+
+Run the test suite, static analysis, and code-style checks via Composer:
+
+```bash
+composer test      # Pest test suite
+composer analyse   # PHPStan/Larastan static analysis
+composer lint      # Pint code-style check (run `composer format` to fix)
+```
+
 ## Upgrading
 
 Please see [UPGRADE.md](https://github.com/CodeTechAgency/laravel-eupago/blob/master/UPGRADE.md) for information on how

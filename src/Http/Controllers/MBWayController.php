@@ -5,6 +5,7 @@ namespace CodeTech\EuPago\Http\Controllers;
 use CodeTech\EuPago\Events\MBWayReferencePaid;
 use CodeTech\EuPago\Http\Requests\MbWayCallbackRequest;
 use CodeTech\EuPago\Models\MbwayReference;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class MBWayController extends Controller
@@ -12,8 +13,7 @@ class MBWayController extends Controller
     /**
      * This endpoint is called when a MB Way reference is paid.
      *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse|object
+     * @return JsonResponse|object
      */
     public function callback(Request $request)
     {
@@ -24,7 +24,7 @@ class MBWayController extends Controller
             ->where('state', 0)
             ->first();
 
-        if (!$reference) {
+        if (! $reference) {
             return response()->json(['response' => 'No pending reference found'])->setStatusCode(404);
         }
 

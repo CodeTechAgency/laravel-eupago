@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class PayShopReference extends Model
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $table = 'payshop_references';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $fillable = [
         'reference',
@@ -25,7 +25,6 @@ class PayShopReference extends Model
         'state' => 'integer',
     ];
 
-
     /*
     |--------------------------------------------------------------------------
     | Scopes
@@ -35,14 +34,12 @@ class PayShopReference extends Model
     /**
      * Scopes a query to only include paid references.
      *
-     * @param $query
      * @return mixed
      */
     public function scopePaid($query)
     {
         return $query->where('state', 1);
     }
-
 
     /*
     |--------------------------------------------------------------------------

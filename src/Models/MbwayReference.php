@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class MbwayReference extends Model
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $fillable = [
         'reference',
@@ -21,7 +21,6 @@ class MbwayReference extends Model
         'state' => 'integer',
     ];
 
-
     /*
     |--------------------------------------------------------------------------
     | Scopes
@@ -31,14 +30,12 @@ class MbwayReference extends Model
     /**
      * Scopes a query to only include paid references.
      *
-     * @param $query
      * @return mixed
      */
     public function scopePaid($query)
     {
         return $query->where('state', 1);
     }
-
 
     /*
     |--------------------------------------------------------------------------

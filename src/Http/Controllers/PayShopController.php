@@ -5,6 +5,7 @@ namespace CodeTech\EuPago\Http\Controllers;
 use CodeTech\EuPago\Events\PayShopReferencePaid;
 use CodeTech\EuPago\Http\Requests\PayShopCallbackRequest;
 use CodeTech\EuPago\Models\PayShopReference;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PayShopController extends Controller
@@ -12,8 +13,7 @@ class PayShopController extends Controller
     /**
      * This endpoint is called when a PayShop reference is paid.
      *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse|object
+     * @return JsonResponse|object
      */
     public function callback(Request $request)
     {
@@ -24,7 +24,7 @@ class PayShopController extends Controller
             ->where('state', 0)
             ->first();
 
-        if (!$reference) {
+        if (! $reference) {
             return response()->json(['response' => 'No pending reference found'])->setStatusCode(404);
         }
 
