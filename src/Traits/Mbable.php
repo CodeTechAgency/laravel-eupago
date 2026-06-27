@@ -19,7 +19,7 @@ trait Mbable
     }
 
     /**
-     * Creates and persists a MB reference.
+     * Creates and persists an MB reference.
      *
      * @param float $value
      * @param string $id

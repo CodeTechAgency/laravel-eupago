@@ -18,7 +18,7 @@ trait Mbwayable
     }
 
     /**
-     * Creates and persists a MB Way reference.
+     * Creates and persists an MB Way reference.
      *
      * @param float $value
      * @param int $id

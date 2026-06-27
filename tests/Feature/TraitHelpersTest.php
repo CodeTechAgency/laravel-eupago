@@ -54,7 +54,7 @@ it('creates and persists an MB Way reference via the trait helper', function () 
     $reference = $this->payable->createMbwayReference(15.00, 1, '912345678');
 
     expect($reference)->toBeInstanceOf(MbwayReference::class)
-        ->and($reference->reference)->toBe('987654321')
+        ->and((string) $reference->reference)->toBe('987654321')
         ->and($this->payable->mbwayReferences()->count())->toBe(1);
 });
 
