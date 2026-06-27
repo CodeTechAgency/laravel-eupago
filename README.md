@@ -117,6 +117,12 @@ class Order extends Model
 
 ```
 
+With the trait applied, you can create and persist a reference in a single call. It returns the persisted reference on success, or the errors on failure:
+
+```
+$reference = $order->createMbReference($value, $id, $startDate, $endDate, $minValue, $maxValue);
+```
+
 Retrieve the MB references:
 
 ```
@@ -166,6 +172,12 @@ class Order extends Model
 {
     use Mbwayable;
 
+```
+
+With the trait applied, you can create and persist a reference in a single call. It returns the persisted reference on success, or the errors on failure:
+
+```
+$reference = $order->createMbwayReference($value, $id, $alias);
 ```
 
 Retrieve the MB Way references:
@@ -255,6 +267,12 @@ class Order extends Model
 {
     use PayShopable;
 
+```
+
+With the trait applied, you can create and persist a reference in a single call. It returns the persisted reference on success, or the errors on failure:
+
+```
+$reference = $order->createPayShopReference($value, $id);
 ```
 
 Retrieve the PayShop references:

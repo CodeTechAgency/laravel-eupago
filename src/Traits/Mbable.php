@@ -8,6 +8,8 @@ use CodeTech\EuPago\Models\MbReference;
 
 trait Mbable
 {
+    use CreatesEuPagoReferences;
+
     /**
      * Get all of the model's MB references.
      */
@@ -17,7 +19,7 @@ trait Mbable
     }
 
     /**
-     * Creates a MB reference.
+     * Creates and persists a MB reference.
      *
      * @param float $value
      * @param string $id
@@ -26,31 +28,15 @@ trait Mbable
      * @param float $minValue
      * @param float $maxValue
      * @param bool $allowDuplication
-     * @return array
-     * @throws \Exception
+     * @return \Illuminate\Database\Eloquent\Model|array the persisted reference, or the errors on failure
+     * @throws \Illuminate\Http\Client\ConnectionException
+     * @throws \Illuminate\Http\Client\RequestException
      */
     public function createMbReference(float $value, string $id, Carbon $startDate, Carbon $endDate, float $minValue, float $maxValue, bool $allowDuplication = false)
     {
-        $mb = new MB(
-            $value,
-            $id,
-            $startDate,
-            $endDate,
-            $minValue,
-            $maxValue,
-            $allowDuplication
+        return $this->persistReference(
+            new MB($value, $id, $startDate, $endDate, $minValue, $maxValue, $allowDuplication),
+            'mbReferences'
         );
-
-        try {
-            $mbReferenceData = $mb->create();
-        } catch (\Exception $e) {
-            throw $e;
-        }
-
-        if ($mb->hasErrors()) {
-            return $mb->getErrors();
-        }
-
-        $this->mbReferences()->create($mbReferenceData);
     }
 }
