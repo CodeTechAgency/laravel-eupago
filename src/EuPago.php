@@ -17,6 +17,11 @@ class EuPago
     const PROD_ENDPOINT = 'https://clientes.eupago.pt';
 
     /**
+     * The reference status (info) endpoint, shared across reference types.
+     */
+    const STATUS_URI = '/clientes/rest_api/multibanco/info';
+
+    /**
      * The errors stored during the operations.
      *
      * @var array
@@ -55,6 +60,41 @@ class EuPago
         }
 
         return $this->mappedReferenceKeys($referenceData);
+    }
+
+    /**
+     * Queries the current status of an existing reference.
+     *
+     * @param string $reference
+     * @param string|null $entity
+     * @return array
+     * @throws \Illuminate\Http\Client\ConnectionException
+     * @throws \Illuminate\Http\Client\RequestException
+     */
+    public function status(string $reference, ?string $entity = null): array
+    {
+        $params = [
+            'chave' => config('eupago.api_key'),
+            'referencia' => $reference,
+        ];
+
+        if ($entity !== null) {
+            $params['entidade'] = $entity;
+        }
+
+        $response = Http::asForm()->post($this->getBaseUri() . self::STATUS_URI, $params)->throw();
+
+        $statusData = $response->json();
+
+        if (!is_array($statusData)) {
+            $statusData = [];
+        }
+
+        if (!($statusData['sucesso'] ?? false)) {
+            $this->addError($statusData['estado'] ?? null, $statusData['resposta'] ?? null);
+        }
+
+        return $this->mappedStatusKeys($statusData);
     }
 
     /**
@@ -107,5 +147,27 @@ class EuPago
     protected function mappedReferenceKeys(array $referenceData): array
     {
         throw new \BadMethodCallException(static::class . ' must implement mappedReferenceKeys().');
+    }
+
+    /**
+     * Maps the raw reference-status response to normalized keys.
+     *
+     * @param array $statusData
+     * @return array
+     */
+    protected function mappedStatusKeys(array $statusData): array
+    {
+        return [
+            'success' => $statusData['sucesso'] ?? null,
+            'state' => $statusData['estado'] ?? null,
+            'response' => $statusData['resposta'] ?? null,
+            'entity' => $statusData['entidade'] ?? null,
+            'reference' => $statusData['referencia'] ?? null,
+            'identifier' => $statusData['identificador'] ?? null,
+            'reference_state' => $statusData['estado_referencia'] ?? null,
+            'created_date' => $statusData['data_criacao'] ?? null,
+            'created_time' => $statusData['hora_criacao'] ?? null,
+            'archived' => $statusData['arquivada'] ?? null,
+        ];
     }
 }

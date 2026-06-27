@@ -1,6 +1,5 @@
 ![laravel-eupago-repo-banner](art/banner.png)
 
-
 # Laravel EuPago
 
 A Laravel package for making payments through the EuPago API.
@@ -8,7 +7,6 @@ A Laravel package for making payments through the EuPago API.
 [![Tests](https://img.shields.io/github/actions/workflow/status/CodeTechAgency/laravel-eupago/run-tests.yml?branch=master&style=flat-square&label=tests)](https://github.com/CodeTechAgency/laravel-eupago/actions/workflows/run-tests.yml)
 [![Latest version](https://img.shields.io/github/release/CodeTechAgency/laravel-eupago?style=flat-square)](https://github.com/CodeTechAgency/laravel-eupago/releases)
 [![GitHub license](https://img.shields.io/github/license/CodeTechAgency/laravel-eupago?style=flat-square)](https://github.com/CodeTechAgency/laravel-eupago/blob/master/LICENSE)
-
 
 ## Compatibility
 
@@ -19,35 +17,37 @@ A Laravel package for making payments through the EuPago API.
 | 9       | `v2.x`  |
 | 8       | `v1.x`  |
 
-
 ## Installation
 
-
 Install the PHP dependency
+
 ```
 composer require codetech/laravel-eupago
 ```
 
 Publish the migration
+
 ```
 php artisan vendor:publish --provider=CodeTech\\EuPago\\Providers\\EuPagoServiceProvider --tag=migrations
 ```
 
 Run the migration
+
 ```
 php artisan migrate
 ```
 
 Publish the configuration file (optional)
+
 ```
 php artisan vendor:publish --provider=CodeTech\\EuPago\\Providers\\EuPagoServiceProvider --tag=config
 ```
 
 Publish the translations files (optional)
+
 ```
 php artisan vendor:publish --provider=CodeTech\\EuPago\\Providers\\EuPagoServiceProvider --tag=translations
 ```
-
 
 ## Configurations
 
@@ -57,12 +57,12 @@ There are two environments available for you to use: "test" and "prod". As you m
 you can use the "test" environment during the development stage of your application. Switch to "prod"
 environment when your application is ready for production.
 
-
 ### MB References
 
 #### Usage
 
 For creating a MB reference, take the following example:
+
 ```
 use CodeTech\EuPago\MB\MB;
 
@@ -93,7 +93,8 @@ try {
 }
 ```
 
-`$referenceData` will contain all the information about the payment: 
+`$referenceData` will contain all the information about the payment:
+
 ```
 [
     'success' => true,
@@ -126,7 +127,8 @@ $mbReferences = $order->mbReferences;
 
 #### Callback
 
-The package already handles the callback, updating the payment reference state and triggering an `MBWayReferencePaid` event.
+The package already handles the callback, updating the payment reference state and triggering an `MBWayReferencePaid`
+event.
 
 ```
 GET
@@ -136,20 +138,19 @@ GET
 
 ####Params
 
-| Name          | Type      |
+| Name          |   Type    |
 |---------------|:---------:|
-| valor         | float     |
-| canal         | string    |
-| referencia    | string    |
-| transacao     | string    |
-| identificador | integer   |
-| mp            | string    |
-| chave_api     | string    |
+| valor         |   float   |
+| canal         |  string   |
+| referencia    |  string   |
+| transacao     |  string   |
+| identificador |  integer  |
+| mp            |  string   |
+| chave_api     |  string   |
 | data          | date time |
-| entidade      | string    |
-| comissao      | float     |
-| local         | string    |
-
+| entidade      |  string   |
+| comissao      |   float   |
+| local         |  string   |
 
 ### MB Way References
 
@@ -177,7 +178,8 @@ $mbwayReferences = $order->mbwayReferences;
 
 #### Callback
 
-The package already handles the callback, updating the payment reference state and triggering an `MBWayReferencePaid` event.
+The package already handles the callback, updating the payment reference state and triggering an `MBWayReferencePaid`
+event.
 
 ```
 GET
@@ -187,27 +189,26 @@ GET
 
 ####Params
 
-| Name          | Type      |
+| Name          |   Type    |
 |---------------|:---------:|
-| valor         | float     |
-| canal         | string    |
-| referencia    | string    |
-| transacao     | string    |
-| identificador | integer   |
-| mp            | string    |
-| chave_api     | string    |
+| valor         |   float   |
+| canal         |  string   |
+| referencia    |  string   |
+| transacao     |  string   |
+| identificador |  integer  |
+| mp            |  string   |
+| chave_api     |  string   |
 | data          | date time |
-| entidade      | string    |
-| comissao      | float     |
-| local         | string    |
-
-
+| entidade      |  string   |
+| comissao      |   float   |
+| local         |  string   |
 
 ### PayShop References
 
 #### Usage
 
 For creating a PayShop reference, take the following example:
+
 ```
 use CodeTech\EuPago\PayShop\PayShop;
 
@@ -233,6 +234,7 @@ try {
 ```
 
 `$payShopReferenceData` will contain all the information about the payment:
+
 ```
 [
     'success' => true,
@@ -265,7 +267,8 @@ $payShopReferences = $order->payShopReferences;
 
 #### Callback
 
-The package already handles the callback, updating the payment reference state and triggering a `PayShopReferencePaid` event.
+The package already handles the callback, updating the payment reference state and triggering a `PayShopReferencePaid`
+event.
 
 ```
 GET
@@ -275,33 +278,73 @@ GET
 
 #### Params
 
-| Name          | Type      |
+| Name          |   Type    |
 |---------------|:---------:|
-| valor         | float     |
-| canal         | string    |
-| referencia    | string    |
-| transacao     | string    |
-| identificador | string    |
-| mp            | string    |
-| chave_api     | string    |
+| valor         |   float   |
+| canal         |  string   |
+| referencia    |  string   |
+| transacao     |  string   |
+| identificador |  string   |
+| mp            |  string   |
+| chave_api     |  string   |
 | data          | date time |
-| entidade      | string    |
-| comissao      | float     |
-| local         | string    |
-
+| entidade      |  string   |
+| comissao      |   float   |
+| local         |  string   |
 
 ---
 
+## Querying reference status
+
+Besides the callback, you can query a reference's current status on demand — useful
+for reconciliation or when a callback is missed or delayed. This works for any
+reference type (MB, MB Way, PayShop):
+
+```
+use CodeTech\EuPago\EuPago;
+
+$eupago = new EuPago;
+
+try {
+    $status = $eupago->status($reference, $entity);
+
+    if ($eupago->hasErrors()) {
+        // handle errors
+    }
+} catch (\Exception $e) {
+    // handle exception
+}
+```
+
+The `$entity` argument is optional. `$status` is mapped to normalized keys, where
+`reference_state` holds the payment status (e.g. `"pendente"`, `"pago"`):
+
+```
+[
+    'success' => true,
+    'state' => 0,
+    'response' => "OK",
+    'entity' => "81921",
+    'reference' => "800152011",
+    'identifier' => "order-123",
+    'reference_state' => "pendente",
+    'created_date' => "2026-06-27",
+    'created_time' => "00:22:49",
+    'archived' => false,
+]
+```
+
+---
 
 ## Upgrading
 
-Please see [UPGRADE.md](https://github.com/CodeTechAgency/laravel-eupago/blob/master/UPGRADE.md) for information on how to upgrade between major versions.
-
+Please see [UPGRADE.md](https://github.com/CodeTechAgency/laravel-eupago/blob/master/UPGRADE.md) for information on how
+to upgrade between major versions.
 
 ## License
 
-**codetech/laravel-eupago** is open-sourced software licensed under the [MIT license](https://github.com/CodeTechAgency/laravel-eupago/blob/master/LICENSE).
-
+**codetech/laravel-eupago** is open-sourced software licensed under
+the [MIT license](https://github.com/CodeTechAgency/laravel-eupago/blob/master/LICENSE).
 
 ## About CodeTech
 
