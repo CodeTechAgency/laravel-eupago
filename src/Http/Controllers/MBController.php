@@ -13,7 +13,7 @@ class MBController extends Controller
     /**
      * This endpoint is called when a MB reference is paid.
      *
-     * @return JsonResponse|object
+     * @return JsonResponse
      */
     public function callback(Request $request)
     {

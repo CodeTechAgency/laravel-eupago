@@ -13,7 +13,7 @@ class MBWayController extends Controller
     /**
      * This endpoint is called when a MB Way reference is paid.
      *
-     * @return JsonResponse|object
+     * @return JsonResponse
      */
     public function callback(Request $request)
     {

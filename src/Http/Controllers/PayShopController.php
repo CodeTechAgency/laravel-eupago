@@ -13,7 +13,7 @@ class PayShopController extends Controller
     /**
      * This endpoint is called when a PayShop reference is paid.
      *
-     * @return JsonResponse|object
+     * @return JsonResponse
      */
     public function callback(Request $request)
     {

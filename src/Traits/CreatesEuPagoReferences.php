@@ -12,6 +12,7 @@ trait CreatesEuPagoReferences
     /**
      * Runs the EuPago request and persists the reference on success.
      *
+     * @param  EuPago  $payment  the payment method to run and persist
      * @param  string  $relation  the relationship method that stores the reference
      * @return Model|array the persisted reference, or the errors on failure
      *
