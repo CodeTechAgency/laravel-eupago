@@ -310,6 +310,111 @@ GET
 | comissao      |   float   |
 | local         |  string   |
 
+### Paysafecard References
+
+Unlike the reference-based methods above, Paysafecard is a **redirect flow**: EuPago
+returns a payment `url` that you must redirect the customer to. There is no static
+entity/reference; instead you pass your own `id` (e.g. the order id), which EuPago
+echoes back in the callback as `identificador`. You may optionally pass a
+`url_retorno` to control where the customer lands after paying.
+
+#### Usage
+
+For creating a Paysafecard reference, take the following example:
+
+```
+use CodeTech\EuPago\Paysafecard\Paysafecard;
+
+$order = Order::find(1);
+
+$paysafecard = new Paysafecard(
+    $order->value,
+    $order->id,
+    route('checkout.return') // optional url_retorno
+);
+
+try {
+    // Make the request to EUPago's API
+    $paysafecardReferenceData = $paysafecard->create();
+
+    if ($paysafecard->hasErrors()) {
+        // handle errors
+    }
+
+    $reference = $order->paysafecardReferences()->create($paysafecardReferenceData);
+
+    // Redirect the customer to Paysafecard to complete the payment
+    return redirect()->away($reference->url);
+} catch (\Exception $e) {
+    // handle exception
+}
+```
+
+`$paysafecardReferenceData` will contain the information about the payment:
+
+```
+[
+    'success' => true,
+    'state' => 0,
+    'identifier' => "order-49",
+    'url' => "https://clientes.eupago.pt/paysafecard/pay/...",
+    'value' => 25.00,
+]
+```
+
+Use the trait on the models for which you want to generate Paysafecard references:
+
+```
+
+use CodeTech\EuPago\Traits\Paysafecardable;
+
+class Order extends Model
+{
+    use Paysafecardable;
+
+```
+
+With the trait applied, you can create and persist a reference in a single call. It returns the persisted reference (whose `url` you redirect to) on success, or the errors on failure:
+
+```
+$reference = $order->createPaysafecardReference($value, $id, $returnUrl);
+```
+
+Retrieve the Paysafecard references:
+
+```
+$order = Order::find(1);
+
+$paysafecardReferences = $order->paysafecardReferences;
+```
+
+#### Callback
+
+The package already handles the callback, updating the payment reference state and triggering a `PaysafecardReferencePaid`
+event. The pending reference is matched on `identificador` (the `id` you sent at creation).
+
+```
+GET
+
+/eupago/paysafecard/callback
+```
+
+#### Params
+
+| Name          |   Type    |
+|---------------|:---------:|
+| valor         |   float   |
+| canal         |  string   |
+| referencia    |  string   |
+| transacao     |  string   |
+| identificador |  string   |
+| mp            |  string   |
+| chave_api     |  string   |
+| data          | date time |
+| entidade      |  string   |
+| comissao      |   float   |
+| local         |  string   |
+
 ---
 
 ## Querying reference status
