@@ -25,6 +25,10 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      *
+     * The original column was FLOAT(10,2), but MySQL deprecated FLOAT(M,D)
+     * in 8.0.17 and Blueprint::float() no longer accepts a scale — a plain
+     * FLOAT is the closest expressible reversal.
+     *
      * @return void
      */
     public function down()

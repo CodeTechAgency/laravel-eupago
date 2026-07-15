@@ -10,7 +10,7 @@ The `*able` traits are deprecated in favour of `Has*References` names (matching 
 | `Mbwayable` | `HasMbWayReferences` |
 | `PayShopable` | `HasPayShopReferences` |
 
-The `mbway_references.value` column changes from FLOAT to DECIMAL(10,2) so callback matching can never miss a payment to float rounding. Re-publish the migrations and run the new one:
+The `mbway_references.value` column changes from FLOAT to DECIMAL(10,2) so callback matching can never miss a payment due to float rounding. Re-publish the migrations and run the new one:
 
 ```bash
 php artisan vendor:publish --provider=CodeTech\\EuPago\\Providers\\EuPagoServiceProvider --tag=migrations
