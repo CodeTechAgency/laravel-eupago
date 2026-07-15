@@ -38,6 +38,8 @@ client** (payment classes only) — see [Routes](#routes) for how to switch.
 - [Testing & code quality](#testing--code-quality)
 - [Upgrading](#upgrading)
 - [Changelog](#changelog)
+- [Contributing](#contributing)
+- [Security](#security)
 - [Support](#support)
 - [License](#license)
 
@@ -492,6 +494,14 @@ for information on how to upgrade between versions.
 ## Changelog
 
 Every release is documented on the [GitHub releases page](https://github.com/CodeTechAgency/laravel-eupago/releases).
+
+## Contributing
+
+Contributions are welcome! Please read the [contributing guidelines](https://github.com/CodeTechAgency/laravel-eupago/blob/master/CONTRIBUTING.md) before opening an issue or pull request.
+
+## Security
+
+If you discover a security vulnerability, please follow the [security policy](https://github.com/CodeTechAgency/laravel-eupago/blob/master/SECURITY.md) — do not report it publicly.
 
 ## Support
 
