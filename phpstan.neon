@@ -13,3 +13,9 @@ parameters:
         -
             message: '#Unsafe usage of new static\(\)\.#'
             path: src/Events/Dispatchable.php
+
+        # The package's traits are consumed by the host application's models,
+        # so within src/ they are legitimately "unused" (PHPStan 2 rule).
+        -
+            identifier: trait.unused
+            path: src/Traits/*
