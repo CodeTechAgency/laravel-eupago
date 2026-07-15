@@ -26,7 +26,7 @@ composer lint      # Pint code-style check (run `composer format` to fix)
 composer analyse   # PHPStan static analysis
 ```
 
-- Add tests for any change in behaviour. Tests are written with Pest and live in `tests/Feature`.
+- Add tests for any change in behaviour. Tests are written with Pest — unit tests live in `tests/Unit`, feature tests in `tests/Feature`.
 - Keep pull requests focused: one feature or fix per PR.
 - Use a [conventional-commit](https://www.conventionalcommits.org) style title, e.g. `fix(mbway): handle missing alias`.
 - Reference the related issue in the PR description. If there is no issue yet, please open one first so the change can be discussed.
