@@ -57,6 +57,36 @@ There are two environments available for you to use: "test" and "prod". As you m
 you can use the "test" environment during the development stage of your application. Switch to "prod"
 environment when your application is ready for production.
 
+### Routes
+
+The package supports two levels of usage:
+
+- **Full integration** (default): use the traits and models to persist references, and let the
+  package handle EuPago's webhooks — it registers the callback routes (`/eupago/*/callback`)
+  automatically.
+- **Thin API client**: use only the payment classes (e.g. `new MB(...)->create()`) and handle
+  persistence and webhooks yourself.
+
+If you only need the thin client, disable the automatic route registration:
+
+```
+EUPAGO_ROUTES=false
+```
+
+With the routes disabled you can still mount the package's callback controllers on routes of
+your own, giving you full control over the path and middleware:
+
+```
+use CodeTech\EuPago\Http\Controllers\MBController;
+
+Route::get('webhooks/eupago/mb', [MBController::class, 'callback'])
+    ->middleware('web')
+    ->name('eupago.mb.callback');
+```
+
+> **Note:** if your application caches routes, run `php artisan route:clear` after changing
+> this setting.
+
 ### MB References
 
 #### Usage

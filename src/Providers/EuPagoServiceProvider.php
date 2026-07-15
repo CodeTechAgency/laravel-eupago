@@ -47,6 +47,10 @@ class EuPagoServiceProvider extends ServiceProvider
      */
     private function loadRoutes()
     {
+        if (! $this->app['config']->get('eupago.routes')) {
+            return;
+        }
+
         if ($this->app->routesAreCached()) {
             return;
         }
