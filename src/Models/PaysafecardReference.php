@@ -16,6 +16,7 @@ class PaysafecardReference extends Model
      */
     protected $fillable = [
         'identifier',
+        'reference',
         'url',
         'value',
         'state',

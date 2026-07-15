@@ -37,12 +37,12 @@ it('returns 404 when the matching Paysafecard reference is already paid', functi
     $response->assertNotFound();
 });
 
-it('rejects a Paysafecard callback for an identifier that does not exist', function () {
+it('rejects a Paysafecard callback for a reference that does not exist', function () {
     $response = $this->getJson(route('eupago.paysafecard.callback', validPaysafecardCallbackPayload([
-        'identificador' => 'unknown-order',
+        'referencia' => '999999999',
     ])));
 
-    $response->assertStatus(422)->assertJsonStructure(['identificador']);
+    $response->assertStatus(422)->assertJsonStructure(['referencia']);
 });
 
 it('rejects a Paysafecard callback from an unknown channel', function () {

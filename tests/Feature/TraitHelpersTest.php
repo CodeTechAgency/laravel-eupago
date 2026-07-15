@@ -74,14 +74,16 @@ it('creates and persists a PayShop reference via the trait helper', function () 
 
 it('creates and persists a Paysafecard reference via the trait helper', function () {
     Http::fake(['*' => Http::response([
-        'sucesso' => true, 'estado' => 0,
-        'resposta' => 'https://sandbox.eupago.pt/paysafecard/pay/abc123',
+        'sucesso' => true, 'estado' => 0, 'resposta' => 'OK',
+        'referencia' => '000017428',
+        'url' => 'https://sandbox.eupago.pt/paysafecard/pay/abc123',
     ])]);
 
     $reference = $this->payable->createPaysafecardReference(25.00, 'order-49', 'https://shop.test/return');
 
     expect($reference)->toBeInstanceOf(PaysafecardReference::class)
         ->and($reference->identifier)->toBe('order-49')
+        ->and($reference->reference)->toBe('000017428')
         ->and($reference->url)->toBe('https://sandbox.eupago.pt/paysafecard/pay/abc123')
         ->and($this->payable->paysafecardReferences()->count())->toBe(1);
 });

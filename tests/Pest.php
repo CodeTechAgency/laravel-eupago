@@ -124,6 +124,7 @@ function createPendingPaysafecardReference(array $overrides = []): PaysafecardRe
 {
     $reference = new PaysafecardReference(array_merge([
         'identifier' => 'order-49',
+        'reference' => '000017428',
         'url' => 'https://sandbox.eupago.pt/paysafecard/pay/abc123',
         'value' => 25.00,
         'state' => 0,
@@ -137,8 +138,7 @@ function createPendingPaysafecardReference(array $overrides = []): PaysafecardRe
 }
 
 /**
- * A valid Paysafecard webhook payload. Paysafecard is matched on `identificador`
- * (the external id we sent at create time), not `referencia`.
+ * A valid Paysafecard webhook payload.
  */
 function validPaysafecardCallbackPayload(array $overrides = []): array
 {

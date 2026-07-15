@@ -46,15 +46,14 @@ class Paysafecard extends EuPago
      * Maps the reference data keys.
      *
      * Unlike the reference-based methods (MB/MBWay/PayShop), Paysafecard is a
-     * redirect flow: the create response carries no entidade/referencia. The
-     * payment URL the customer must be sent to comes back in `resposta` on
-     * success, and the external `id` we sent is what the webhook later echoes
-     * back as `identificador` — so we persist our own id/value as the match key.
+     * redirect flow: on success the response carries the payment `url` the
+     * customer must be redirected to, plus a `referencia` the webhook later
+     * echoes back (no entidade).
      *
-     * NOTE: the success-response shape is documented only as sucesso/estado/
-     * resposta and could not be verified live (sandbox returned estado -11).
-     * The `url` mapping below assumes `resposta` holds the redirect URL on
-     * success; reconcile against a real response before relying on it.
+     * NOTE: the success-response shape (`url` + `referencia` keys) matches
+     * EuPago's official WooCommerce plugin, which reads exactly these fields
+     * from this endpoint; it could not be verified live because the sandbox
+     * Paysafecard link is down (estado -11).
      */
     protected function mappedReferenceKeys(array $referenceData): array
     {
@@ -62,7 +61,8 @@ class Paysafecard extends EuPago
             'success' => $referenceData['sucesso'] ?? null,
             'state' => $referenceData['estado'] ?? null,
             'identifier' => $this->id,
-            'url' => $referenceData['resposta'] ?? null,
+            'reference' => $referenceData['referencia'] ?? null,
+            'url' => $referenceData['url'] ?? null,
             'value' => $this->value,
         ];
     }

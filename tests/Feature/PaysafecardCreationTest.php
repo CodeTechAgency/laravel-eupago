@@ -8,13 +8,17 @@ it('creates a Paysafecard reference and maps the redirect URL', function () {
     Http::fake(['*' => Http::response([
         'sucesso' => true,
         'estado' => 0,
-        'resposta' => 'https://sandbox.eupago.pt/paysafecard/pay/abc123',
+        'resposta' => 'OK',
+        'referencia' => '000017428',
+        'url' => 'https://sandbox.eupago.pt/paysafecard/pay/abc123',
+        'valor' => '25.00000',
     ])]);
 
     $result = (new Paysafecard(25.00, 'order-49', 'https://shop.test/return'))->create();
 
     expect($result['success'])->toBeTrue()
         ->and($result['identifier'])->toBe('order-49')
+        ->and($result['reference'])->toBe('000017428')
         ->and($result['url'])->toBe('https://sandbox.eupago.pt/paysafecard/pay/abc123')
         ->and($result['value'])->toBe(25.00);
 });

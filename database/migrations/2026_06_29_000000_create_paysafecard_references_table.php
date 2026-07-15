@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('paysafecard_references', function (Blueprint $table) {
             $table->id();
             $table->string('identifier')->index();
+            $table->string('reference')->nullable()->index();
             $table->text('url')->nullable();
             $table->decimal('value', 10, 2)->default(0);
             $table->integer('state')->default(0);

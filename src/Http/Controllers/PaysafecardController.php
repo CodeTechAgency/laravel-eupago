@@ -19,7 +19,7 @@ class PaysafecardController extends Controller
     {
         $validatedData = $this->validateCallback($request, (new PaysafecardCallbackRequest)->rules());
 
-        $reference = PaysafecardReference::where('identifier', $validatedData['identificador'])
+        $reference = PaysafecardReference::where('reference', $validatedData['referencia'])
             ->where('value', $validatedData['valor'])
             ->where('state', 0)
             ->first();
