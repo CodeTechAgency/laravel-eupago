@@ -1,14 +1,16 @@
 {
   "name": "codetech/laravel-eupago",
-  "description": "A Laravel package for making payments through the EuPago API.",
+  "description": "Eupago payment gateway integration for Laravel — Multibanco, MB WAY, PayShop and PaysafeCard payments.",
   "keywords": [
-    "eupago",
-    "referências multibanco",
-    "mb references",
-    "mbway references",
-    "laravel-eupago",
     "laravel",
-    "codetech"
+    "eupago",
+    "payment",
+    "payment-gateway",
+    "multibanco",
+    "mbway",
+    "payshop",
+    "paysafecard",
+    "portugal"
   ],
   "authors": [
     {
