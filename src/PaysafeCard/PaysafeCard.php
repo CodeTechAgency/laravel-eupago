@@ -60,6 +60,7 @@ class PaysafeCard extends EuPago
         return [
             'success' => $referenceData['sucesso'] ?? null,
             'state' => $referenceData['estado'] ?? null,
+            'response' => $referenceData['resposta'] ?? null,
             'identifier' => $this->id,
             'reference' => $referenceData['referencia'] ?? null,
             'url' => $referenceData['url'] ?? null,

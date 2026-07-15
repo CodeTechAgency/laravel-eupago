@@ -17,6 +17,7 @@ it('creates a PaysafeCard reference and maps the redirect URL', function () {
     $result = (new PaysafeCard(25.00, 'order-49', 'https://shop.test/return'))->create();
 
     expect($result['success'])->toBeTrue()
+        ->and($result['response'])->toBe('OK')
         ->and($result['identifier'])->toBe('order-49')
         ->and($result['reference'])->toBe('000017428')
         ->and($result['url'])->toBe('https://sandbox.eupago.pt/paysafecard/pay/abc123')

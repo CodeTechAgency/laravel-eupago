@@ -357,6 +357,7 @@ try {
 [
     'success' => true,
     'state' => 0,
+    'response' => "OK",
     'identifier' => "order-49",
     'reference' => "000017428",
     'url' => "https://clientes.eupago.pt/paysafecard/pay/...",
