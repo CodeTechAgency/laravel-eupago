@@ -35,4 +35,17 @@ return [
 
     'channel' => env('EUPAGO_CHANNEL', 'demo'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Routes
+    |--------------------------------------------------------------------------
+    |
+    | The package automatically registers the payment callback routes
+    | (e.g. /eupago/mb/callback). Disable this if you use the package as
+    | a thin API client and handle EuPago's webhooks yourself.
+    |
+    */
+
+    'routes' => (bool) env('EUPAGO_ROUTES', true),
+
 ];
