@@ -1,82 +1,123 @@
-![laravel-eupago-repo-banner](art/banner.png)
+![Laravel Eupago](https://raw.githubusercontent.com/CodeTechAgency/laravel-eupago/master/art/banner.png)
 
-# Laravel EuPago
+# Laravel Eupago
 
-A Laravel package for making payments through the EuPago API.
-
-[![Tests](https://img.shields.io/github/actions/workflow/status/CodeTechAgency/laravel-eupago/run-tests.yml?branch=master&style=flat-square&label=tests)](https://github.com/CodeTechAgency/laravel-eupago/actions/workflows/run-tests.yml)
 [![Latest version](https://img.shields.io/github/release/CodeTechAgency/laravel-eupago?style=flat-square)](https://github.com/CodeTechAgency/laravel-eupago/releases)
+[![Total downloads](https://img.shields.io/packagist/dt/codetech/laravel-eupago?style=flat-square)](https://packagist.org/packages/codetech/laravel-eupago)
+[![Tests](https://img.shields.io/github/actions/workflow/status/CodeTechAgency/laravel-eupago/run-tests.yml?branch=master&style=flat-square&label=tests)](https://github.com/CodeTechAgency/laravel-eupago/actions/workflows/run-tests.yml)
 [![GitHub license](https://img.shields.io/github/license/CodeTechAgency/laravel-eupago?style=flat-square)](https://github.com/CodeTechAgency/laravel-eupago/blob/master/LICENSE)
 
-## Compatibility
+[Eupago](https://www.eupago.pt) is a Portuguese payment gateway that lets businesses accept
+the payment methods used in Portugal — Multibanco references, MB WAY, PayShop, and more —
+through a single API. This package integrates that gateway into Laravel, end to end:
 
-| Laravel | Package |
-|---------|---------|
-| 11      | `v3.1+` |
-| 10      | `v2.1+` |
-| 9       | `v2.x`  |
-| 8       | `v1.x`  |
+- **Create payments** for Multibanco (MB), MB WAY, PayShop, and PaysafeCard.
+- **Persist payment references** as Eloquent models, attached to any model of yours (an
+  `Order`, an `Invoice`, …) through ready-made traits.
+- **Handle Eupago's webhooks** out of the box: the package ships the callback endpoints,
+  validates the payload, marks the reference as paid, and fires an event
+  (`MBReferencePaid`, `MBWayReferencePaid`, `PayShopReferencePaid`,
+  `PaysafeCardReferencePaid`) you can hook your business logic on.
+- **Query a reference's status** on demand, for reconciliation or missed callbacks.
+
+You can use it as a **full integration** (traits, models, webhooks) or as a **thin API
+client** (payment classes only) — see [Routes](#routes) for how to switch.
+
+## Table of contents
+
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+  - [Multibanco (MB)](#multibanco-mb)
+  - [MB WAY](#mb-way)
+  - [PayShop](#payshop)
+  - [PaysafeCard](#paysafecard)
+  - [Callbacks](#callbacks)
+- [Querying reference status](#querying-reference-status)
+- [Testing & code quality](#testing--code-quality)
+- [Upgrading](#upgrading)
+- [Changelog](#changelog)
+- [Support](#support)
+- [License](#license)
+
+## Requirements
+
+| Package version                                                          | Laravel | PHP     | Status         |
+|--------------------------------------------------------------------------|---------|---------|----------------|
+| 3.x (`master`)                                                           | 10 / 11 | ≥ 8.1   | Active         |
+| 2.x ([`2.x`](https://github.com/CodeTechAgency/laravel-eupago/tree/2.x)) | 9 / 10  | ≥ 8.0.2 | Security fixes |
+| 1.x ([`1.x`](https://github.com/CodeTechAgency/laravel-eupago/tree/1.x)) | 8       | ≥ 8.0   | End of life    |
+
+Upgrading from an older version? See the [upgrade guide](https://github.com/CodeTechAgency/laravel-eupago/blob/master/UPGRADE.md).
 
 ## Installation
 
-Install the PHP dependency
+Add the package to your Laravel application using Composer:
 
-```
+```bash
 composer require codetech/laravel-eupago
 ```
 
-Publish the migration
+The service provider is registered automatically via package discovery.
 
-```
-php artisan vendor:publish --provider=CodeTech\\EuPago\\Providers\\EuPagoServiceProvider --tag=migrations
-```
+Publish and run the migrations:
 
-Run the migration
-
-```
+```bash
+php artisan vendor:publish --provider="CodeTech\EuPago\Providers\EuPagoServiceProvider" --tag=migrations
 php artisan migrate
 ```
 
-Publish the configuration file (optional)
+Optionally, publish the configuration file and the translations:
 
-```
-php artisan vendor:publish --provider=CodeTech\\EuPago\\Providers\\EuPagoServiceProvider --tag=config
-```
-
-Publish the translations files (optional)
-
-```
-php artisan vendor:publish --provider=CodeTech\\EuPago\\Providers\\EuPagoServiceProvider --tag=translations
+```bash
+php artisan vendor:publish --provider="CodeTech\EuPago\Providers\EuPagoServiceProvider" --tag=config
+php artisan vendor:publish --provider="CodeTech\EuPago\Providers\EuPagoServiceProvider" --tag=translations
 ```
 
-## Configurations
+## Configuration
+
+The package is configured through environment variables (see `config/eupago.php`):
+
+```ini
+EUPAGO_ENV=test
+EUPAGO_API_KEY=demo-xxxx-xxxx-xxxx-xxx
+EUPAGO_CHANNEL=demo
+EUPAGO_ROUTES=true
+```
 
 ### Environment
 
-There are two environments available for you to use: "test" and "prod". As you may have guessed,
-you can use the "test" environment during the development stage of your application. Switch to "prod"
-environment when your application is ready for production.
+Two environments are available: `test` and `prod`. Use `test` (the Eupago sandbox,
+`sandbox.eupago.pt`) while developing, and switch to `prod` (`clientes.eupago.pt`)
+when your application is ready to take real payments.
+
+### API key and channel
+
+`EUPAGO_API_KEY` is the API key of your Eupago channel — you find it in the
+[Eupago backoffice](https://clientes.eupago.pt), where each channel has its own key.
+`EUPAGO_CHANNEL` is the channel name; incoming callbacks are validated against it.
 
 ### Routes
 
 The package supports two levels of usage:
 
 - **Full integration** (default): use the traits and models to persist references, and let the
-  package handle EuPago's webhooks — it registers the callback routes (`/eupago/*/callback`)
+  package handle Eupago's webhooks — it registers the callback routes (`/eupago/*/callback`)
   automatically.
 - **Thin API client**: use only the payment classes (e.g. `new MB(...)->create()`) and handle
   persistence and webhooks yourself.
 
 If you only need the thin client, disable the automatic route registration:
 
-```
+```ini
 EUPAGO_ROUTES=false
 ```
 
 With the routes disabled you can still mount the package's callback controllers on routes of
 your own, giving you full control over the path and middleware:
 
-```
+```php
 use CodeTech\EuPago\Http\Controllers\MBController;
 
 Route::get('webhooks/eupago/mb', [MBController::class, 'callback'])
@@ -87,182 +128,154 @@ Route::get('webhooks/eupago/mb', [MBController::class, 'callback'])
 > **Note:** if your application caches routes, run `php artisan route:clear` after changing
 > this setting.
 
-### MB References
+## Usage
 
-#### Usage
+Every payment method follows the same pattern: build the payment object, call `create()`
+to run the request against the Eupago API, and persist the returned reference data — or
+let the method's trait do the create-and-persist in a single call. When Eupago confirms
+the payment, the package [handles the callback](#callbacks) and fires the method's
+`*ReferencePaid` event.
 
-For creating a MB reference, take the following example:
+### Multibanco (MB)
 
-```
+Create an MB reference:
+
+```php
 use CodeTech\EuPago\MB\MB;
 
 $order = Order::find(1);
 
 $mb = new MB(
-    $order->value,
-    $order->id,
-    $order->date,
-    $order->payment_limit_date,
-    $order->value,
-    $order->value,
-    0 // allows duplicated payments
+    $order->value,        // payment value
+    $order->id,           // your identifier, echoed back in the callback
+    now(),                // start date
+    now()->addDays(3),    // end date (payment limit)
+    $order->value,        // minimum accepted value
+    $order->value,        // maximum accepted value
+    false                 // allow duplicated payments
 );
 
 try {
-    // Make the request to EUPago's API
     $mbReferenceData = $mb->create();
 
     if ($mb->hasErrors()) {
         // handle errors
     }
-    
-    // Make the request to EUPago's API
+
     $order->mbReferences()->create($mbReferenceData);
 } catch (\Exception $e) {
     // handle exception
 }
 ```
 
-`$referenceData` will contain all the information about the payment:
+`$mbReferenceData` contains the normalized payment information:
 
-```
+```php
 [
     'success' => true,
     'state' => 0,
     'response' => "OK",
+    'entity' => "82167",
     'reference' => "000001236",
     'value' => "3.00000",
 ]
 ```
 
-Use the trait on the models for which you want to generate MB references:
+Alternatively, use the `Mbable` trait on the models for which you want to generate MB
+references:
 
-```
-
+```php
 use CodeTech\EuPago\Traits\Mbable;
 
 class Order extends Model
 {
     use Mbable;
-
+}
 ```
 
-With the trait applied, you can create and persist a reference in a single call. It returns the persisted reference on success, or the errors on failure:
+With the trait applied, you can create and persist a reference in a single call. It
+returns the persisted reference on success, or the errors on failure:
 
-```
+```php
 $reference = $order->createMbReference($value, $id, $startDate, $endDate, $minValue, $maxValue);
 ```
 
 Retrieve the MB references:
 
-```
-$order = Order::find(1);
-
+```php
 $mbReferences = $order->mbReferences;
 ```
 
-#### Callback
+When the reference is paid, the callback fires an `MBReferencePaid` event.
 
-The package already handles the callback, updating the payment reference state and triggering an `MBWayReferencePaid`
-event.
+### MB WAY
 
-```
-GET
+Create an MB WAY payment request — the customer confirms it on their phone through the
+MB WAY app:
 
-/eupago/mb/callback
-```
+```php
+use CodeTech\EuPago\MBWay\MBWay;
 
-#### Params
+$order = Order::find(1);
 
-| Name          |   Type    |
-|---------------|:---------:|
-| valor         |   float   |
-| canal         |  string   |
-| referencia    |  string   |
-| transacao     |  string   |
-| identificador |  integer  |
-| mp            |  string   |
-| chave_api     |  string   |
-| data          | date time |
-| entidade      |  string   |
-| comissao      |   float   |
-| local         |  string   |
+$mbway = new MBWay(
+    $order->value,     // payment value
+    $order->id,        // your identifier (integer), echoed back in the callback
+    '912345678',       // the customer's MB WAY alias (phone number)
+    'Order #1'         // optional description
+);
 
-### MB Way References
+try {
+    $mbwayReferenceData = $mbway->create();
 
-#### Usage
+    if ($mbway->hasErrors()) {
+        // handle errors
+    }
 
-Use the trait on the models for which you want to generate MB Way references:
-
+    $order->mbwayReferences()->create($mbwayReferenceData);
+} catch (\Exception $e) {
+    // handle exception
+}
 ```
 
+Alternatively, use the `Mbwayable` trait:
+
+```php
 use CodeTech\EuPago\Traits\Mbwayable;
 
 class Order extends Model
 {
     use Mbwayable;
-
+}
 ```
 
-With the trait applied, you can create and persist a reference in a single call. It returns the persisted reference on success, or the errors on failure:
-
-```
+```php
 $reference = $order->createMbwayReference($value, $id, $alias);
 ```
 
-Retrieve the MB Way references:
+Retrieve the MB WAY references:
 
-```
-$order = Order::find(1);
-
+```php
 $mbwayReferences = $order->mbwayReferences;
 ```
 
-#### Callback
+When the payment is confirmed, the callback fires an `MBWayReferencePaid` event.
 
-The package already handles the callback, updating the payment reference state and triggering an `MBWayReferencePaid`
-event.
+### PayShop
 
-```
-GET
+Create a PayShop reference:
 
-/eupago/mbway/callback
-```
-
-#### Params
-
-| Name          |   Type    |
-|---------------|:---------:|
-| valor         |   float   |
-| canal         |  string   |
-| referencia    |  string   |
-| transacao     |  string   |
-| identificador |  integer  |
-| mp            |  string   |
-| chave_api     |  string   |
-| data          | date time |
-| entidade      |  string   |
-| comissao      |   float   |
-| local         |  string   |
-
-### PayShop References
-
-#### Usage
-
-For creating a PayShop reference, take the following example:
-
-```
+```php
 use CodeTech\EuPago\PayShop\PayShop;
 
 $order = Order::find(1);
 
 $payShop = new PayShop(
-    $order->value,
-    $order->id
+    $order->value,   // payment value
+    $order->id       // your identifier, echoed back in the callback
 );
 
 try {
-    // Make the request to EUPago's API
     $payShopReferenceData = $payShop->create();
 
     if ($payShop->hasErrors()) {
@@ -275,9 +288,9 @@ try {
 }
 ```
 
-`$payShopReferenceData` will contain all the information about the payment:
+`$payShopReferenceData` contains the normalized payment information:
 
-```
+```php
 [
     'success' => true,
     'state' => 0,
@@ -287,73 +300,39 @@ try {
 ]
 ```
 
-Use the trait on the models for which you want to generate PayShop references:
+Alternatively, use the `PayShopable` trait:
 
-```
-
+```php
 use CodeTech\EuPago\Traits\PayShopable;
 
 class Order extends Model
 {
     use PayShopable;
-
+}
 ```
 
-With the trait applied, you can create and persist a reference in a single call. It returns the persisted reference on success, or the errors on failure:
-
-```
+```php
 $reference = $order->createPayShopReference($value, $id);
 ```
 
 Retrieve the PayShop references:
 
-```
-$order = Order::find(1);
-
+```php
 $payShopReferences = $order->payShopReferences;
 ```
 
-#### Callback
+When the reference is paid, the callback fires a `PayShopReferencePaid` event.
 
-The package already handles the callback, updating the payment reference state and triggering a `PayShopReferencePaid`
-event.
+### PaysafeCard
 
-```
-GET
-
-/eupago/payshop/callback
-```
-
-#### Params
-
-| Name          |   Type    |
-|---------------|:---------:|
-| valor         |   float   |
-| canal         |  string   |
-| referencia    |  string   |
-| transacao     |  string   |
-| identificador |  string   |
-| mp            |  string   |
-| chave_api     |  string   |
-| data          | date time |
-| entidade      |  string   |
-| comissao      |   float   |
-| local         |  string   |
-
-### PaysafeCard References
-
-Unlike the reference-based methods above, PaysafeCard is a **redirect flow**: EuPago
+Unlike the reference-based methods above, PaysafeCard is a **redirect flow**: Eupago
 returns a payment `url` that you must redirect the customer to, along with a
 `reference` for the payment (there is no entity). You also pass your own `id`
-(e.g. the order id), which EuPago echoes back in the callback as `identificador`,
+(e.g. the order id), which Eupago echoes back in the callback as `identificador`,
 and you may optionally pass a `url_retorno` to control where the customer lands
 after paying.
 
-#### Usage
-
-For creating a PaysafeCard reference, take the following example:
-
-```
+```php
 use CodeTech\EuPago\PaysafeCard\PaysafeCard;
 
 $order = Order::find(1);
@@ -365,7 +344,6 @@ $paysafeCard = new PaysafeCard(
 );
 
 try {
-    // Make the request to EUPago's API
     $paysafeCardReferenceData = $paysafeCard->create();
 
     if ($paysafeCard->hasErrors()) {
@@ -381,9 +359,9 @@ try {
 }
 ```
 
-`$paysafeCardReferenceData` will contain the information about the payment:
+`$paysafeCardReferenceData` contains the normalized payment information:
 
-```
+```php
 [
     'success' => true,
     'state' => 0,
@@ -395,44 +373,51 @@ try {
 ]
 ```
 
-Use the trait on the models for which you want to generate PaysafeCard references:
+Alternatively, use the `HasPaysafeCardReferences` trait:
 
-```
-
+```php
 use CodeTech\EuPago\Traits\HasPaysafeCardReferences;
 
 class Order extends Model
 {
     use HasPaysafeCardReferences;
-
+}
 ```
 
-With the trait applied, you can create and persist a reference in a single call. It returns the persisted reference (whose `url` you redirect to) on success, or the errors on failure:
+With the trait applied, you can create and persist a reference in a single call. It
+returns the persisted reference (whose `url` you redirect to) on success, or the errors
+on failure:
 
-```
+```php
 $reference = $order->createPaysafeCardReference($value, $id, $returnUrl);
 ```
 
 Retrieve the PaysafeCard references:
 
-```
-$order = Order::find(1);
-
+```php
 $paysafeCardReferences = $order->paysafeCardReferences;
 ```
 
-#### Callback
+When the payment is completed, the callback fires a `PaysafeCardReferencePaid` event.
 
-The package already handles the callback, updating the payment reference state and triggering a `PaysafeCardReferencePaid`
-event. The pending reference is matched on `referencia`, like the other payment methods.
+### Callbacks
 
-```
-GET
+Eupago notifies your application of confirmed payments through a webhook — configure the
+callback URL in the [Eupago backoffice](https://clientes.eupago.pt) for your channel.
+The package registers one endpoint per payment method:
 
-/eupago/paysafecard/callback
-```
+| Payment method | Callback endpoint             | Event fired              |
+|----------------|-------------------------------|--------------------------|
+| Multibanco     | `GET /eupago/mb/callback`     | `MBReferencePaid`        |
+| MB WAY         | `GET /eupago/mbway/callback`  | `MBWayReferencePaid`     |
+| PayShop        | `GET /eupago/payshop/callback`| `PayShopReferencePaid`   |
+| PaysafeCard    | `GET /eupago/paysafecard/callback` | `PaysafeCardReferencePaid` |
 
-#### Params
+Each callback validates the payload (including the channel and API key), matches the
+pending reference on `referencia` and value, marks it as paid, and fires the
+corresponding event with the reference as payload.
+
+All callbacks receive the same query parameters:
 
 | Name          |   Type    |
 |---------------|:---------:|
@@ -448,16 +433,14 @@ GET
 | comissao      |   float   |
 | local         |  string   |
 
----
-
 ## Querying reference status
 
 Besides the callback, you can query a reference's current status on demand — useful
-for reconciliation or when a callback is missed or delayed. EuPago resolves any
-reference type (MB, MB Way, PayShop) through a single reference-info endpoint, so
+for reconciliation or when a callback is missed or delayed. Eupago resolves any
+reference type (MB, MB WAY, PayShop) through a single reference-info endpoint, so
 the same call works regardless of how the reference was created:
 
-```
+```php
 use CodeTech\EuPago\EuPago;
 
 $eupago = new EuPago;
@@ -476,7 +459,7 @@ try {
 The `$entity` argument is optional. `$status` is mapped to normalized keys, where
 `reference_state` holds the payment status (e.g. `"pendente"`, `"pago"`):
 
-```
+```php
 [
     'success' => true,
     'state' => 0,
@@ -491,8 +474,6 @@ The `$entity` argument is optional. `$status` is mapped to normalized keys, wher
 ]
 ```
 
----
-
 ## Testing & code quality
 
 Run the test suite, static analysis, and code-style checks via Composer:
@@ -505,8 +486,19 @@ composer lint      # Pint code-style check (run `composer format` to fix)
 
 ## Upgrading
 
-Please see [UPGRADE.md](https://github.com/CodeTechAgency/laravel-eupago/blob/master/UPGRADE.md) for information on how
-to upgrade between major versions.
+Please see [UPGRADE.md](https://github.com/CodeTechAgency/laravel-eupago/blob/master/UPGRADE.md)
+for information on how to upgrade between versions.
+
+## Changelog
+
+Every release is documented on the [GitHub releases page](https://github.com/CodeTechAgency/laravel-eupago/releases).
+
+## Support
+
+If this package helps you, consider [starring the repository](https://github.com/CodeTechAgency/laravel-eupago) —
+it helps other developers discover it.
+
+---
 
 ## License
 
@@ -515,4 +507,4 @@ the [MIT license](https://github.com/CodeTechAgency/laravel-eupago/blob/master/L
 
 ## About CodeTech
 
-[CodeTech](https://www.codetech.pt) is a web development agency based on Matosinhos, Portugal. Oh, and we LOVE Laravel!
+[CodeTech](https://www.codetech.pt) is a web development agency based in Matosinhos, Portugal. Oh, and we LOVE Laravel!
