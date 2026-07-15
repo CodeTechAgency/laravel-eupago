@@ -2,7 +2,9 @@
 
 use CodeTech\EuPago\Models\MbReference;
 use CodeTech\EuPago\Models\MbwayReference;
+use CodeTech\EuPago\Models\PaysafeCardReference;
 use CodeTech\EuPago\Models\PayShopReference;
+use CodeTech\EuPago\Traits\HasPaysafeCardReferences;
 use CodeTech\EuPago\Traits\Mbable;
 use CodeTech\EuPago\Traits\Mbwayable;
 use CodeTech\EuPago\Traits\PayShopable;
@@ -13,7 +15,7 @@ use Illuminate\Support\Facades\Schema;
 
 class DummyPayable extends Model
 {
-    use Mbable, Mbwayable, PayShopable;
+    use HasPaysafeCardReferences, Mbable, Mbwayable, PayShopable;
 
     protected $table = 'dummy_payables';
 
@@ -68,6 +70,22 @@ it('creates and persists a PayShop reference via the trait helper', function () 
 
     expect($reference)->toBeInstanceOf(PayShopReference::class)
         ->and($this->payable->payShopReferences()->count())->toBe(1);
+});
+
+it('creates and persists a PaysafeCard reference via the trait helper', function () {
+    Http::fake(['*' => Http::response([
+        'sucesso' => true, 'estado' => 0, 'resposta' => 'OK',
+        'referencia' => '000017428',
+        'url' => 'https://sandbox.eupago.pt/paysafecard/pay/abc123',
+    ])]);
+
+    $reference = $this->payable->createPaysafeCardReference(25.00, 'order-49', 'https://shop.test/return');
+
+    expect($reference)->toBeInstanceOf(PaysafeCardReference::class)
+        ->and($reference->identifier)->toBe('order-49')
+        ->and($reference->reference)->toBe('000017428')
+        ->and($reference->url)->toBe('https://sandbox.eupago.pt/paysafecard/pay/abc123')
+        ->and($this->payable->paysafeCardReferences()->count())->toBe(1);
 });
 
 it('returns the errors and persists nothing when the API reports failure', function () {

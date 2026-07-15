@@ -1,5 +1,14 @@
 # Upgrading
 
+## From v3.3.x to v3.4.0
+
+This release adds PaysafeCard support, which uses a new `paysafecard_references` table. Re-publish the migrations (existing files are left untouched) and run the new one:
+
+```bash
+php artisan vendor:publish --provider=CodeTech\\EuPago\\Providers\\EuPagoServiceProvider --tag=migrations
+php artisan migrate
+```
+
 ## From v3.1.x to v3.2.0
 
 This release adds PayShop support, which uses a new `payshop_references` table. Re-publish the migrations (existing files are left untouched) and run the new one:

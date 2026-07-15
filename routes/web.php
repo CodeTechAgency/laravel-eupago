@@ -2,6 +2,7 @@
 
 use CodeTech\EuPago\Http\Controllers\MBController;
 use CodeTech\EuPago\Http\Controllers\MBWayController;
+use CodeTech\EuPago\Http\Controllers\PaysafeCardController;
 use CodeTech\EuPago\Http\Controllers\PayShopController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,4 +25,9 @@ Route::prefix('mbway')->name('mbway.')->group(function () {
 // PayShop
 Route::prefix('payshop')->name('payshop.')->group(function () {
     Route::get('callback', [PayShopController::class, 'callback'])->name('callback');
+});
+
+// PaysafeCard
+Route::prefix('paysafecard')->name('paysafecard.')->group(function () {
+    Route::get('callback', [PaysafeCardController::class, 'callback'])->name('callback');
 });

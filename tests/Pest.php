@@ -2,6 +2,7 @@
 
 use CodeTech\EuPago\Models\MbReference;
 use CodeTech\EuPago\Models\MbwayReference;
+use CodeTech\EuPago\Models\PaysafeCardReference;
 use CodeTech\EuPago\Models\PayShopReference;
 use CodeTech\EuPago\Tests\TestCase;
 
@@ -116,5 +117,44 @@ function validPayShopCallbackPayload(array $overrides = []): array
         'data' => now()->format('Y-m-d:H:i:s'),
         'entidade' => '00000',
         'comissao' => '0.20',
+    ], $overrides);
+}
+
+function createPendingPaysafeCardReference(array $overrides = []): PaysafeCardReference
+{
+    $reference = new PaysafeCardReference(array_merge([
+        'identifier' => 'order-49',
+        'reference' => '000017428',
+        'url' => 'https://sandbox.eupago.pt/paysafecard/pay/abc123',
+        'value' => 25.00,
+        'state' => 0,
+    ], $overrides));
+
+    $reference->paysafecardable_id = 1;
+    $reference->paysafecardable_type = 'Tests\\Dummy';
+    $reference->save();
+
+    return $reference;
+}
+
+/**
+ * A valid PaysafeCard webhook payload.
+ */
+function validPaysafeCardCallbackPayload(array $overrides = []): array
+{
+    // valor mirrors the real EuPago webhook, which sends 5 decimal places
+    // (e.g. "3.00000") against our decimal(10,2) column — captured 2026-06-30.
+    return array_merge([
+        'valor' => '25.00000',
+        'canal' => config('eupago.channel'),
+        'referencia' => '000017428',
+        'transacao' => '29749250',
+        'identificador' => 'order-49',
+        'mp' => 'PF:PT',
+        'chave_api' => config('eupago.api_key'),
+        'data' => now()->format('Y-m-d:H:i:s'),
+        'entidade' => '00001',
+        'comissao' => '0.37',
+        'local' => 'demo',
     ], $overrides);
 }
