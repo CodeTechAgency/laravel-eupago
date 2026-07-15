@@ -10,6 +10,15 @@ The `*able` traits are deprecated in favour of `Has*References` names (matching 
 | `Mbwayable` | `HasMbWayReferences` |
 | `PayShopable` | `HasPayShopReferences` |
 
+The `mbway_references.value` column changes from FLOAT to DECIMAL(10,2) so callback matching can never miss a payment due to float rounding. Re-publish the migrations and run the new one:
+
+```bash
+php artisan vendor:publish --provider=CodeTech\\EuPago\\Providers\\EuPagoServiceProvider --tag=migrations
+php artisan migrate
+```
+
+> **Laravel 10 apps only:** the column-change migration needs `doctrine/dbal` (`composer require doctrine/dbal`). Laravel 11+ changes columns natively.
+
 ## From v3.4.x to v3.5.0
 
 This release adds PaysafeCard support, which uses a new `paysafecard_references` table. Re-publish the migrations (existing files are left untouched) and run the new one:
