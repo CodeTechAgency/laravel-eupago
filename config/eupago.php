@@ -29,6 +29,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | OAuth 2.0 client credentials
+    |--------------------------------------------------------------------------
+    |
+    | Eupago's management API (refunds, ...) is authenticated with OAuth 2.0
+    | bearer tokens instead of the API key. Generate the client credentials
+    | in the Eupago backoffice. Reference creation and status queries keep
+    | using the API key, so these are only required for management calls.
+    |
+    */
+
+    'client_id' => env('EUPAGO_CLIENT_ID'),
+
+    'client_secret' => env('EUPAGO_CLIENT_SECRET'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Channel
     |--------------------------------------------------------------------------
     */
