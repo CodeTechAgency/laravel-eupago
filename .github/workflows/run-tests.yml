@@ -13,13 +13,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Laravel 10 supports PHP 8.1–8.3; Laravel 11 supports PHP 8.2+.
+        # PHP support: Laravel 10 → 8.1–8.3; Laravel 11 → 8.2+; Laravel 12 → 8.2+;
+        # Laravel 13 → 8.3+. Pest resolves per row (2.x on Laravel 10, 3.x on 11+).
         include:
           - { php: '8.1', laravel: '10.*', testbench: '8.*' }
           - { php: '8.2', laravel: '10.*', testbench: '8.*' }
           - { php: '8.3', laravel: '10.*', testbench: '8.*' }
           - { php: '8.2', laravel: '11.*', testbench: '9.*' }
           - { php: '8.3', laravel: '11.*', testbench: '9.*' }
+          - { php: '8.4', laravel: '11.*', testbench: '9.*' }
+          - { php: '8.2', laravel: '12.*', testbench: '10.*' }
+          - { php: '8.3', laravel: '12.*', testbench: '10.*' }
+          - { php: '8.4', laravel: '12.*', testbench: '10.*' }
+          - { php: '8.3', laravel: '13.*', testbench: '11.*' }
+          - { php: '8.4', laravel: '13.*', testbench: '11.*' }
 
     name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
 
