@@ -13,7 +13,7 @@ trait HasMbWayReferences
     use CreatesEuPagoReferences;
 
     /**
-     * Get all of the models' MB Way references.
+     * Get all of the model's MB Way references.
      */
     public function mbwayReferences()
     {
