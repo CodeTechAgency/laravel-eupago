@@ -14,7 +14,10 @@ jobs:
       fail-fast: false
       matrix:
         # PHP support: Laravel 10 → 8.1–8.3; Laravel 11 → 8.2+; Laravel 12 → 8.2+;
-        # Laravel 13 → 8.3+. Pest resolves per row (2.x on Laravel 10, 3.x on 11+).
+        # Laravel 13 → 8.3+. The Testbench pin also deterministically selects the
+        # Pest major: Testbench 8 conflicts with PHPUnit >=10.6 while Pest 3 needs
+        # PHPUnit ^11.5, so Laravel 10 rows always get Pest 2; Testbench 9+ rows
+        # resolve Pest 3.
         include:
           - { php: '8.1', laravel: '10.*', testbench: '8.*' }
           - { php: '8.2', laravel: '10.*', testbench: '8.*' }
