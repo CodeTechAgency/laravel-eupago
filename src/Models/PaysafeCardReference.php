@@ -4,7 +4,7 @@ namespace CodeTech\EuPago\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PaysafecardReference extends Model
+class PaysafeCardReference extends Model
 {
     /**
      * {@inheritdoc}

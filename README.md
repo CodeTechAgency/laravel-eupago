@@ -324,11 +324,11 @@ after paying.
 For creating a PaysafeCard reference, take the following example:
 
 ```
-use CodeTech\EuPago\Paysafecard\Paysafecard;
+use CodeTech\EuPago\PaysafeCard\PaysafeCard;
 
 $order = Order::find(1);
 
-$paysafecard = new Paysafecard(
+$paysafeCard = new PaysafeCard(
     $order->value,
     $order->id,
     route('checkout.return') // optional url_retorno
@@ -336,13 +336,13 @@ $paysafecard = new Paysafecard(
 
 try {
     // Make the request to EUPago's API
-    $paysafecardReferenceData = $paysafecard->create();
+    $paysafeCardReferenceData = $paysafeCard->create();
 
-    if ($paysafecard->hasErrors()) {
+    if ($paysafeCard->hasErrors()) {
         // handle errors
     }
 
-    $reference = $order->paysafecardReferences()->create($paysafecardReferenceData);
+    $reference = $order->paysafeCardReferences()->create($paysafeCardReferenceData);
 
     // Redirect the customer to PaysafeCard to complete the payment
     return redirect()->away($reference->url);
@@ -351,7 +351,7 @@ try {
 }
 ```
 
-`$paysafecardReferenceData` will contain the information about the payment:
+`$paysafeCardReferenceData` will contain the information about the payment:
 
 ```
 [
@@ -368,18 +368,18 @@ Use the trait on the models for which you want to generate PaysafeCard reference
 
 ```
 
-use CodeTech\EuPago\Traits\Paysafecardable;
+use CodeTech\EuPago\Traits\HasPaysafeCardReferences;
 
 class Order extends Model
 {
-    use Paysafecardable;
+    use HasPaysafeCardReferences;
 
 ```
 
 With the trait applied, you can create and persist a reference in a single call. It returns the persisted reference (whose `url` you redirect to) on success, or the errors on failure:
 
 ```
-$reference = $order->createPaysafecardReference($value, $id, $returnUrl);
+$reference = $order->createPaysafeCardReference($value, $id, $returnUrl);
 ```
 
 Retrieve the PaysafeCard references:
@@ -387,12 +387,12 @@ Retrieve the PaysafeCard references:
 ```
 $order = Order::find(1);
 
-$paysafecardReferences = $order->paysafecardReferences;
+$paysafeCardReferences = $order->paysafeCardReferences;
 ```
 
 #### Callback
 
-The package already handles the callback, updating the payment reference state and triggering a `PaysafecardReferencePaid`
+The package already handles the callback, updating the payment reference state and triggering a `PaysafeCardReferencePaid`
 event. The pending reference is matched on `referencia`, like the other payment methods.
 
 ```

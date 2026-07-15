@@ -2,27 +2,27 @@
 
 namespace CodeTech\EuPago\Events;
 
-use CodeTech\EuPago\Models\PaysafecardReference;
+use CodeTech\EuPago\Models\PaysafeCardReference;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Queue\SerializesModels;
 
-class PaysafecardReferencePaid
+class PaysafeCardReferencePaid
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * The Paysafecard reference object.
+     * The PaysafeCard reference object.
      *
-     * @var PaysafecardReference
+     * @var PaysafeCardReference
      */
     public $reference;
 
     /**
-     * PaysafecardReferencePaid constructor.
+     * PaysafeCardReferencePaid constructor.
      */
-    public function __construct(PaysafecardReference $reference)
+    public function __construct(PaysafeCardReference $reference)
     {
         $this->reference = $reference;
     }

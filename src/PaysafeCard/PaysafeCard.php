@@ -1,10 +1,10 @@
 <?php
 
-namespace CodeTech\EuPago\Paysafecard;
+namespace CodeTech\EuPago\PaysafeCard;
 
 use CodeTech\EuPago\EuPago;
 
-class Paysafecard extends EuPago
+class PaysafeCard extends EuPago
 {
     /**
      * The unique resource identifier.
@@ -33,7 +33,7 @@ class Paysafecard extends EuPago
     protected $returnUrl;
 
     /**
-     * Paysafecard constructor.
+     * PaysafeCard constructor.
      */
     public function __construct(float $value, string $id, ?string $returnUrl = null)
     {
@@ -45,7 +45,7 @@ class Paysafecard extends EuPago
     /**
      * Maps the reference data keys.
      *
-     * Unlike the reference-based methods (MB/MBWay/PayShop), Paysafecard is a
+     * Unlike the reference-based methods (MB/MBWay/PayShop), PaysafeCard is a
      * redirect flow: on success the response carries the payment `url` the
      * customer must be redirected to, plus a `referencia` the webhook later
      * echoes back (no entidade).
@@ -53,7 +53,7 @@ class Paysafecard extends EuPago
      * NOTE: the success-response shape (`url` + `referencia` keys) matches
      * EuPago's official WooCommerce plugin, which reads exactly these fields
      * from this endpoint; it could not be verified live because the sandbox
-     * Paysafecard link is down (estado -11).
+     * PaysafeCard link is down (estado -11).
      */
     protected function mappedReferenceKeys(array $referenceData): array
     {

@@ -4,7 +4,7 @@ namespace CodeTech\EuPago\Http\Requests;
 
 use Illuminate\Validation\Rule;
 
-class PaysafecardCallbackRequest extends CallbackRequest
+class PaysafeCardCallbackRequest extends CallbackRequest
 {
     /**
      * Get the validation rules that apply to the callback.

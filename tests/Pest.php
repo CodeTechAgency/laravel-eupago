@@ -2,7 +2,7 @@
 
 use CodeTech\EuPago\Models\MbReference;
 use CodeTech\EuPago\Models\MbwayReference;
-use CodeTech\EuPago\Models\PaysafecardReference;
+use CodeTech\EuPago\Models\PaysafeCardReference;
 use CodeTech\EuPago\Models\PayShopReference;
 use CodeTech\EuPago\Tests\TestCase;
 
@@ -120,9 +120,9 @@ function validPayShopCallbackPayload(array $overrides = []): array
     ], $overrides);
 }
 
-function createPendingPaysafecardReference(array $overrides = []): PaysafecardReference
+function createPendingPaysafeCardReference(array $overrides = []): PaysafeCardReference
 {
-    $reference = new PaysafecardReference(array_merge([
+    $reference = new PaysafeCardReference(array_merge([
         'identifier' => 'order-49',
         'reference' => '000017428',
         'url' => 'https://sandbox.eupago.pt/paysafecard/pay/abc123',
@@ -138,9 +138,9 @@ function createPendingPaysafecardReference(array $overrides = []): PaysafecardRe
 }
 
 /**
- * A valid Paysafecard webhook payload.
+ * A valid PaysafeCard webhook payload.
  */
-function validPaysafecardCallbackPayload(array $overrides = []): array
+function validPaysafeCardCallbackPayload(array $overrides = []): array
 {
     // valor mirrors the real EuPago webhook, which sends 5 decimal places
     // (e.g. "3.00000") against our decimal(10,2) column — captured 2026-06-30.
