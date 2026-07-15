@@ -220,7 +220,7 @@ $order = Order::find(1);
 
 $mbway = new MBWay(
     $order->value,     // payment value
-    $order->id,        // your identifier (integer), echoed back in the callback
+    $order->id,        // your identifier (int), echoed back as `identificador` in the callback
     '912345678',       // the customer's MB WAY alias (phone number)
     'Order #1'         // optional description
 );
@@ -419,19 +419,19 @@ corresponding event with the reference as payload.
 
 All callbacks receive the same query parameters:
 
-| Name          |   Type    |
-|---------------|:---------:|
-| valor         |   float   |
-| canal         |  string   |
-| referencia    |  string   |
-| transacao     |  string   |
-| identificador |  string   |
-| mp            |  string   |
-| chave_api     |  string   |
-| data          | date time |
-| entidade      |  string   |
-| comissao      |   float   |
-| local         |  string   |
+| Name          | Type                          | Required |
+|---------------|-------------------------------|:--------:|
+| valor         | float                         | yes      |
+| canal         | string                        | yes      |
+| referencia    | string                        | yes      |
+| transacao     | string                        | yes      |
+| identificador | string                        | yes      |
+| mp            | string                        | yes      |
+| chave_api     | string                        | yes      |
+| data          | date time (`Y-m-d:H:i:s`)     | yes      |
+| entidade      | string                        | yes      |
+| comissao      | float                         | yes      |
+| local         | string                        | no       |
 
 ## Querying reference status
 
