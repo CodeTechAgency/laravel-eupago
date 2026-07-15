@@ -183,15 +183,15 @@ try {
 ]
 ```
 
-Alternatively, use the `Mbable` trait on the models for which you want to generate MB
-references:
+Alternatively, use the `HasMultibancoReferences` trait on the models for which you want
+to generate MB references:
 
 ```php
-use CodeTech\EuPago\Traits\Mbable;
+use CodeTech\EuPago\Traits\HasMultibancoReferences;
 
 class Order extends Model
 {
-    use Mbable;
+    use HasMultibancoReferences;
 }
 ```
 
@@ -240,14 +240,14 @@ try {
 }
 ```
 
-Alternatively, use the `Mbwayable` trait:
+Alternatively, use the `HasMbWayReferences` trait:
 
 ```php
-use CodeTech\EuPago\Traits\Mbwayable;
+use CodeTech\EuPago\Traits\HasMbWayReferences;
 
 class Order extends Model
 {
-    use Mbwayable;
+    use HasMbWayReferences;
 }
 ```
 
@@ -302,14 +302,14 @@ try {
 ]
 ```
 
-Alternatively, use the `PayShopable` trait:
+Alternatively, use the `HasPayShopReferences` trait:
 
 ```php
-use CodeTech\EuPago\Traits\PayShopable;
+use CodeTech\EuPago\Traits\HasPayShopReferences;
 
 class Order extends Model
 {
-    use PayShopable;
+    use HasPayShopReferences;
 }
 ```
 

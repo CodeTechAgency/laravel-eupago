@@ -4,7 +4,10 @@ use CodeTech\EuPago\Models\MbReference;
 use CodeTech\EuPago\Models\MbwayReference;
 use CodeTech\EuPago\Models\PaysafeCardReference;
 use CodeTech\EuPago\Models\PayShopReference;
+use CodeTech\EuPago\Traits\HasMbWayReferences;
+use CodeTech\EuPago\Traits\HasMultibancoReferences;
 use CodeTech\EuPago\Traits\HasPaysafeCardReferences;
+use CodeTech\EuPago\Traits\HasPayShopReferences;
 use CodeTech\EuPago\Traits\Mbable;
 use CodeTech\EuPago\Traits\Mbwayable;
 use CodeTech\EuPago\Traits\PayShopable;
@@ -15,7 +18,21 @@ use Illuminate\Support\Facades\Schema;
 
 class DummyPayable extends Model
 {
-    use HasPaysafeCardReferences, Mbable, Mbwayable, PayShopable;
+    use HasMbWayReferences, HasMultibancoReferences, HasPaysafeCardReferences, HasPayShopReferences;
+
+    protected $table = 'dummy_payables';
+
+    public $timestamps = false;
+
+    protected $guarded = [];
+}
+
+/**
+ * Uses the deprecated trait aliases — guards backwards compatibility until v4.
+ */
+class DummyLegacyPayable extends Model
+{
+    use Mbable, Mbwayable, PayShopable;
 
     protected $table = 'dummy_payables';
 
@@ -98,4 +115,20 @@ it('returns the errors and persists nothing when the API reports failure', funct
     expect($result)->toBeArray()
         ->and($result)->toHaveKey(11)
         ->and($this->payable->payShopReferences()->count())->toBe(0);
+});
+
+it('keeps the deprecated trait aliases working until v4', function () {
+    $legacy = DummyLegacyPayable::create();
+
+    Http::fake(['*' => Http::response([
+        'sucesso' => true, 'estado' => 0, 'resposta' => 'OK',
+        'referencia' => '555444333', 'valor' => 20.00,
+    ])]);
+
+    $reference = $legacy->createPayShopReference(20.00, '1');
+
+    expect($reference)->toBeInstanceOf(PayShopReference::class)
+        ->and($legacy->payShopReferences()->count())->toBe(1)
+        ->and($legacy->mbReferences()->count())->toBe(0)
+        ->and($legacy->mbwayReferences()->count())->toBe(0);
 });

@@ -1,5 +1,15 @@
 # Upgrading
 
+## From v3.5.x to v3.6.0
+
+The `*able` traits are deprecated in favour of `Has*References` names (matching `HasPaysafeCardReferences`). The old names keep working as aliases until v4 — no behavior change — but you should update your models:
+
+| Deprecated | Use instead |
+|------------|-------------|
+| `Mbable` | `HasMultibancoReferences` |
+| `Mbwayable` | `HasMbWayReferences` |
+| `PayShopable` | `HasPayShopReferences` |
+
 ## From v3.4.x to v3.5.0
 
 This release adds PaysafeCard support, which uses a new `paysafecard_references` table. Re-publish the migrations (existing files are left untouched) and run the new one:
