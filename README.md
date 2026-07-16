@@ -35,6 +35,7 @@ client** (payment classes only) — see [Routes](#routes) for how to switch.
   - [PaysafeCard](#paysafecard)
   - [Callbacks](#callbacks)
 - [Querying reference status](#querying-reference-status)
+- [Refunds](#refunds)
 - [Testing & code quality](#testing--code-quality)
 - [Upgrading](#upgrading)
 - [Changelog](#changelog)
@@ -86,6 +87,8 @@ EUPAGO_ENV=test
 EUPAGO_API_KEY=demo-xxxx-xxxx-xxxx-xxx
 EUPAGO_CHANNEL=demo
 EUPAGO_ROUTES=true
+EUPAGO_CLIENT_ID=
+EUPAGO_CLIENT_SECRET=
 ```
 
 ### Environment
@@ -99,6 +102,15 @@ when your application is ready to take real payments.
 `EUPAGO_API_KEY` is the API key of your Eupago channel — you find it in the
 [Eupago backoffice](https://clientes.eupago.pt), where each channel has its own key.
 `EUPAGO_CHANNEL` is the channel name; incoming callbacks are validated against it.
+
+### OAuth client credentials
+
+Eupago's management API — currently used for [refunds](#refunds) — is authenticated with
+OAuth 2.0 bearer tokens instead of the API key. Generate the client credentials in the
+Eupago backoffice and set `EUPAGO_CLIENT_ID` and `EUPAGO_CLIENT_SECRET`. The package
+requests tokens through the client credentials grant and caches them until they expire,
+so you never handle tokens yourself. If you only create references and query their
+status, you can leave these empty.
 
 ### Routes
 
@@ -475,6 +487,52 @@ The `$entity` argument is optional. `$status` is mapped to normalized keys, wher
     'archived' => false,
 ]
 ```
+
+## Refunds
+
+Paid transactions can be refunded, partially or in full, through Eupago's management
+API. Refunds require the [OAuth client credentials](#oauth-client-credentials) to be
+configured. The refund is keyed by the transaction id — the `transacao` value delivered
+by the payment callback:
+
+```php
+use CodeTech\EuPago\EuPago;
+
+$eupago = new EuPago;
+
+try {
+    $result = $eupago->refund($transactionId, 10.50);
+
+    if ($eupago->hasErrors()) {
+        // handle rejection (e.g. refund larger than the payment)
+    }
+} catch (\Exception $e) {
+    // handle exception
+}
+```
+
+`refund()` also accepts an optional reason and, for payment methods without a direct
+refund path, the destination bank account:
+
+```php
+$eupago->refund($transactionId, 10.50, reason: 'duplicate order', iban: 'PT50...', bic: 'BPOTPTPL');
+```
+
+The result is mapped to normalized keys:
+
+```php
+[
+    'success' => true,
+    'status' => "Success",
+    'refund_id' => "12345",
+    'code' => null,
+    'text' => null,
+]
+```
+
+When Eupago rejects the refund (`status` `"Rejected"`), the rejection's `code` and `text`
+are also added to the error bag. Transport and server errors throw, mirroring `create()`
+and `status()`.
 
 ## Testing & code quality
 

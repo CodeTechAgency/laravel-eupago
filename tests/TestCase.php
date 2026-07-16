@@ -27,6 +27,8 @@ abstract class TestCase extends Orchestra
 
         $app['config']->set('eupago.api_key', 'test-api-key');
         $app['config']->set('eupago.channel', 'demo');
+        $app['config']->set('eupago.client_id', 'test-client-id');
+        $app['config']->set('eupago.client_secret', 'test-client-secret');
     }
 
     protected function defineDatabaseMigrations(): void

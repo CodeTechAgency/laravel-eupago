@@ -2,6 +2,7 @@
 
 namespace CodeTech\EuPago;
 
+use CodeTech\EuPago\Auth\TokenProvider;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
@@ -34,6 +35,11 @@ class EuPago
      * endpoint.
      */
     const STATUS_URI = '/clientes/rest_api/multibanco/info';
+
+    /**
+     * The refund endpoint of the management API, keyed by transaction id.
+     */
+    const REFUND_URI = '/api/management/v1.02/refund/';
 
     /**
      * The errors stored during the operations.
@@ -108,6 +114,48 @@ class EuPago
     }
 
     /**
+     * Refunds a transaction, partially or in full. The transaction id is the
+     * `transacao` value delivered by the payment callback.
+     *
+     * Rejections (e.g. a refund larger than the payment) come back as client
+     * errors with a structured body (transactionStatus present), so they land
+     * in the error bag instead of throwing. Transport and server errors throw,
+     * as do client errors without a structured refund body (e.g. auth failures).
+     *
+     * @throws ConnectionException
+     * @throws RequestException
+     */
+    public function refund(int|string $transactionId, float $amount, ?string $reason = null, ?string $iban = null, ?string $bic = null): array
+    {
+        $params = array_filter([
+            'amount' => $amount,
+            'reason' => $reason,
+            'iban' => $iban,
+            'bic' => $bic,
+        ], fn ($value) => $value !== null);
+
+        $response = Http::withToken((new TokenProvider)->token())
+            ->post($this->getBaseUri().static::REFUND_URI.$transactionId, $params)
+            ->throwIfServerError();
+
+        $refundData = $response->json();
+
+        if (! is_array($refundData)) {
+            $refundData = [];
+        }
+
+        if ($response->clientError() && ! isset($refundData['transactionStatus'])) {
+            $response->throw();
+        }
+
+        if (($refundData['transactionStatus'] ?? null) !== 'Success') {
+            $this->addError($refundData['code'] ?? null, $refundData['text'] ?? null);
+        }
+
+        return $this->mappedRefundKeys($refundData);
+    }
+
+    /**
      * Returns the errors.
      */
     public function getErrors(): array
@@ -145,6 +193,20 @@ class EuPago
     protected function mappedReferenceKeys(array $referenceData): array
     {
         throw new \BadMethodCallException(static::class.' must implement mappedReferenceKeys().');
+    }
+
+    /**
+     * Maps the raw refund response to normalized keys.
+     */
+    protected function mappedRefundKeys(array $refundData): array
+    {
+        return [
+            'success' => ($refundData['transactionStatus'] ?? null) === 'Success',
+            'status' => $refundData['transactionStatus'] ?? null,
+            'refund_id' => $refundData['refundId'] ?? null,
+            'code' => $refundData['code'] ?? null,
+            'text' => $refundData['text'] ?? null,
+        ];
     }
 
     /**
