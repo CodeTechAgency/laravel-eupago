@@ -9,9 +9,9 @@
 
 Accept the payment methods used in Portugal — Multibanco references, MB WAY, PayShop,
 and PaysafeCard — in your Laravel application, through the
-[Eupago](https://www.eupago.pt) payment gateway. The package creates the payments,
-persists the references as Eloquent models attached to your own models, handles
-Eupago's webhooks, and fires an event when a payment is confirmed.
+[Eupago](https://www.eupago.pt) payment gateway. The package handles the whole payment
+lifecycle, from creating a payment on any of your Eloquent models to the webhook that
+confirms it, behind a simple API.
 
 ## Quick start
 
@@ -47,12 +47,10 @@ the reference as paid, and fires an `MBWayReferencePaid` event.
 
 ## Documentation
 
-The full documentation is available at
-[codetech.pt/open-source/laravel-eupago](https://www.codetech.pt/open-source/laravel-eupago)
-and in this repository's [`docs/`](docs) folder: requirements, configuration, all four
-payment methods, callbacks, reference status queries, and refunds.
+There is more to the package than the quick start above. To learn all about it, head
+over to [the extensive documentation](https://www.codetech.pt/open-source/laravel-eupago).
 
-Upgrading between versions? See [UPGRADE.md](https://github.com/CodeTechAgency/laravel-eupago/blob/master/UPGRADE.md).
+Upgrading from an older version? See the [upgrade guide](https://github.com/CodeTechAgency/laravel-eupago/blob/master/UPGRADE.md).
 
 ## Changelog
 
