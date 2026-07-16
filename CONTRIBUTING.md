@@ -16,6 +16,19 @@ cd laravel-eupago
 composer install
 ```
 
+## Running the package locally
+
+The repository ships a `testbench.yaml`, so the [Testbench CLI](https://packages.tools/testbench) can boot the package inside a real Laravel skeleton without creating a host application:
+
+```bash
+cp .env.example .env         # then add your Eupago sandbox credentials
+vendor/bin/testbench migrate # run the package migrations (sqlite)
+vendor/bin/testbench tinker  # REPL with the package booted
+vendor/bin/testbench serve   # serve an app exposing the package routes
+```
+
+Inside tinker the container is up and the service provider is registered, so calls hit the real sandbox with the credentials from `.env` — e.g. `(new CodeTech\EuPago\EuPago)->status('123456789')`.
+
 ## Before submitting a pull request
 
 Run the full quality suite locally — CI runs the same checks:
