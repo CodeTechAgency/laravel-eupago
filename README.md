@@ -39,6 +39,8 @@ class Order extends Model
     use HasMbWayReferences;
 }
 
+$order = Order::find(1);
+
 $reference = $order->createMbwayReference($order->value, $order->id, '912345678');
 ```
 
