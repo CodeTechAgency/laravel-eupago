@@ -118,8 +118,9 @@ class EuPago
      * `transacao` value delivered by the payment callback.
      *
      * Rejections (e.g. a refund larger than the payment) come back as client
-     * errors with a structured body, so they land in the error bag instead of
-     * throwing — only transport and server errors throw.
+     * errors with a structured body (transactionStatus present), so they land
+     * in the error bag instead of throwing. Transport and server errors throw,
+     * as do client errors without a structured refund body (e.g. auth failures).
      *
      * @throws ConnectionException
      * @throws RequestException
@@ -141,6 +142,10 @@ class EuPago
 
         if (! is_array($refundData)) {
             $refundData = [];
+        }
+
+        if ($response->clientError() && ! isset($refundData['transactionStatus'])) {
+            $response->throw();
         }
 
         if (($refundData['transactionStatus'] ?? null) !== 'Success') {

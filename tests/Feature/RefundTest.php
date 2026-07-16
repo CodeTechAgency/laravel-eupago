@@ -77,6 +77,12 @@ it('records an error when the refund is rejected', function () {
         ->and($eupago->getErrors())->toHaveKey('DIRECT_REFUND_NOT_ALLOWED');
 });
 
+it('throws when the refund API returns a client error without a refund body', function () {
+    fakeRefund(['error' => 'invalid_token'], 401);
+
+    expect(fn () => (new EuPago)->refund(987654, 10.50))->toThrow(RequestException::class);
+});
+
 it('throws when the refund API returns a server error', function () {
     fakeRefund([], 500);
 
