@@ -1,6 +1,7 @@
 ---
 title: Querying reference status
 weight: 10
+group: Handling payments
 ---
 
 Besides the [callback](callbacks.md), you can query a reference's current status on

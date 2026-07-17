@@ -1,6 +1,7 @@
 ---
 title: Callbacks
 weight: 9
+group: Handling payments
 ---
 
 Eupago notifies your application of confirmed payments through a webhook — configure the

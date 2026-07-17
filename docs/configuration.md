@@ -1,6 +1,7 @@
 ---
 title: Configuration
 weight: 4
+group: Getting started
 ---
 
 The package is configured through environment variables (see `config/eupago.php`):
