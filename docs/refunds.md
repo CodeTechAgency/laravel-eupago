@@ -24,8 +24,13 @@ try {
 }
 ```
 
-`refund()` also accepts an optional reason and, for payment methods without a direct
-refund path, the destination bank account:
+`refund()` also accepts an optional reason and the destination bank account. Payment
+methods with a direct refund path, such as MB WAY, return the money to its source and
+need nothing more. Methods without one, such as Multibanco, are refunded by bank
+transfer instead, so Eupago rejects the refund with `IBAN_MISSING` unless a
+destination IBAN is given. The matching BIC must always be sent together with the
+IBAN — Eupago does not derive it, and a refund with an IBAN but no BIC is rejected
+with `BIC_INVALID`:
 
 ```php
 $eupago->refund($transactionId, 10.50, reason: 'duplicate order', iban: 'PT50...', bic: 'BPOTPTPL');
