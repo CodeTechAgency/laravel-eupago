@@ -1,6 +1,7 @@
 ---
 title: MB WAY
 weight: 6
+group: Payment methods
 ---
 
 Create an MB WAY payment request — the customer confirms it on their phone through the

@@ -1,6 +1,7 @@
 ---
 title: PaysafeCard
 weight: 8
+group: Payment methods
 ---
 
 Unlike the reference-based methods, PaysafeCard is a **redirect flow**: Eupago

@@ -1,6 +1,7 @@
 ---
 title: Requirements
 weight: 2
+group: Getting started
 ---
 
 | Package version                                                          | Laravel | PHP     | Status         |

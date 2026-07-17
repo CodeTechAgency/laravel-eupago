@@ -1,6 +1,7 @@
 ---
 title: Multibanco (MB)
 weight: 5
+group: Payment methods
 ---
 
 Create an MB reference:

@@ -1,6 +1,7 @@
 ---
 title: Refunds
 weight: 11
+group: Handling payments
 ---
 
 Paid transactions can be refunded, partially or in full, through Eupago's management

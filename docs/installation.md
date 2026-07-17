@@ -1,6 +1,7 @@
 ---
 title: Installation
 weight: 3
+group: Getting started
 ---
 
 Add the package to your Laravel application using Composer:

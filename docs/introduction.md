@@ -1,6 +1,7 @@
 ---
 title: Introduction
 weight: 1
+group: Getting started
 ---
 
 [Eupago](https://www.eupago.pt) is a Portuguese payment gateway that lets businesses accept

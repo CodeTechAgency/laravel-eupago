@@ -1,6 +1,7 @@
 ---
 title: PayShop
 weight: 7
+group: Payment methods
 ---
 
 Create a PayShop reference:
