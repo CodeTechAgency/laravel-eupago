@@ -30,7 +30,7 @@ Optionally, publish the configuration file:
 php artisan vendor:publish --provider="CodeTech\EuPago\Providers\EuPagoServiceProvider" --tag=config
 ```
 
-And the translations:
+You can also publish the translations:
 
 ```bash
 php artisan vendor:publish --provider="CodeTech\EuPago\Providers\EuPagoServiceProvider" --tag=translations
