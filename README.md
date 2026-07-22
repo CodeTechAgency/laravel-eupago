@@ -17,6 +17,11 @@ behind a simple API.
 
 ```bash
 composer require codetech/laravel-eupago
+```
+
+Publish and run the migrations:
+
+```bash
 php artisan vendor:publish --provider="CodeTech\EuPago\Providers\EuPagoServiceProvider" --tag=migrations
 php artisan migrate
 ```
