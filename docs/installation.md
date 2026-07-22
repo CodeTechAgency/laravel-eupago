@@ -18,7 +18,7 @@ Publish the migrations:
 php artisan vendor:publish --provider="CodeTech\EuPago\Providers\EuPagoServiceProvider" --tag=migrations
 ```
 
-Run them:
+Run the migrations:
 
 ```bash
 php artisan migrate
