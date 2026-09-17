@@ -1,6 +1,6 @@
 {
   "name": "codetech/laravel-eupago",
-  "description": "Eupago payment gateway integration for Laravel — Multibanco, MB WAY, PayShop and PaysafeCard payments.",
+  "description": "Eupago payment gateway integration for Laravel — Multibanco, MB WAY, PayShop, PaysafeCard and Credit Card payments.",
   "keywords": [
     "laravel",
     "eupago",
@@ -10,6 +10,7 @@
     "mbway",
     "payshop",
     "paysafecard",
+    "credit-card",
     "portugal"
   ],
   "authors": [

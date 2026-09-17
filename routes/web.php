@@ -1,5 +1,6 @@
 <?php
 
+use CodeTech\EuPago\Http\Controllers\CreditCardController;
 use CodeTech\EuPago\Http\Controllers\MBController;
 use CodeTech\EuPago\Http\Controllers\MBWayController;
 use CodeTech\EuPago\Http\Controllers\PaysafeCardController;
@@ -30,4 +31,9 @@ Route::prefix('payshop')->name('payshop.')->group(function () {
 // PaysafeCard
 Route::prefix('paysafecard')->name('paysafecard.')->group(function () {
     Route::get('callback', [PaysafeCardController::class, 'callback'])->name('callback');
+});
+
+// Credit Card
+Route::prefix('creditcard')->name('creditcard.')->group(function () {
+    Route::get('callback', [CreditCardController::class, 'callback'])->name('callback');
 });
