@@ -55,4 +55,6 @@ Retrieve the MB WAY references:
 $mbwayReferences = $order->mbwayReferences;
 ```
 
-When the payment is confirmed, the [callback](callbacks.md) fires an `MBWayReferencePaid` event.
+When the payment is confirmed, the [callback](callbacks.md) fires an `MBWayReferencePaid`
+event and stores the Eupago transaction on the reference, so a paid reference can be
+[refunded](refunds.md) through `$reference->transaction_id`.

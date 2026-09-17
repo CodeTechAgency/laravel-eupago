@@ -11,6 +11,8 @@ it('marks a pending MBWay reference as paid and dispatches the event', function 
 
     $response->assertOk()->assertJson(['response' => 'Success']);
     expect((int) $reference->fresh()->state)->toBe(1);
+    // The callback's `transacao` is the id refunds are keyed by.
+    expect($reference->fresh()->transaction_id)->toBe('TXN999');
     Event::assertDispatched(
         MBWayReferencePaid::class,
         fn (MBWayReferencePaid $event) => $event->reference->is($reference)

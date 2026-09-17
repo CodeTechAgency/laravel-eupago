@@ -28,7 +28,10 @@ class MBWayController extends Controller
             return response()->json(['response' => 'No pending reference found'])->setStatusCode(404);
         }
 
-        $reference->update(['state' => 1]);
+        $reference->update([
+            'state' => 1,
+            'transaction_id' => $validatedData['transacao'],
+        ]);
 
         // trigger event
         event(new MBWayReferencePaid($reference));

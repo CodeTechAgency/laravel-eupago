@@ -74,4 +74,6 @@ Retrieve the MB references:
 $mbReferences = $order->mbReferences;
 ```
 
-When the reference is paid, the [callback](callbacks.md) fires an `MBReferencePaid` event.
+When the reference is paid, the [callback](callbacks.md) fires an `MBReferencePaid` event
+and stores the Eupago transaction on the reference, so a paid reference can be
+[refunded](refunds.md) through `$reference->transaction_id`.

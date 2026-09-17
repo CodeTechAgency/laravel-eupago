@@ -12,6 +12,7 @@ class MbReference extends Model
     protected $fillable = [
         'entity',
         'reference',
+        'transaction_id',
         'value',
         'start_date',
         'end_date',
