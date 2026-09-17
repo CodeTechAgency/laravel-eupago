@@ -16,6 +16,7 @@ class PayShopReference extends Model
      */
     protected $fillable = [
         'reference',
+        'transaction_id',
         'value',
         'state',
     ];

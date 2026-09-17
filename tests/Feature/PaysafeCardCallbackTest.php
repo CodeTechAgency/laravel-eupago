@@ -11,6 +11,8 @@ it('marks a pending PaysafeCard reference as paid and dispatches the event', fun
 
     $response->assertOk()->assertJson(['response' => 'Success']);
     expect((int) $reference->fresh()->state)->toBe(1);
+    // The callback's `transacao` is the id refunds are keyed by.
+    expect($reference->fresh()->transaction_id)->toBe('29749250');
     Event::assertDispatched(
         PaysafeCardReferencePaid::class,
         fn (PaysafeCardReferencePaid $event) => $event->reference->is($reference)

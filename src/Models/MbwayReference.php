@@ -11,6 +11,7 @@ class MbwayReference extends Model
      */
     protected $fillable = [
         'reference',
+        'transaction_id',
         'value',
         'alias',
         'state',
