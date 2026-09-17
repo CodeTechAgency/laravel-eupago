@@ -1,5 +1,14 @@
 # Upgrading
 
+## From v3.7.x to v3.8.0
+
+This release adds Credit Card support, which uses a new `credit_card_references` table. Re-publish the migrations (existing files are left untouched) and run the new one:
+
+```bash
+php artisan vendor:publish --provider=CodeTech\\EuPago\\Providers\\EuPagoServiceProvider --tag=migrations
+php artisan migrate
+```
+
 ## From v3.5.x to v3.6.0
 
 The `*able` traits are deprecated in favour of `Has*References` names (matching `HasPaysafeCardReferences`). The old names keep working as aliases until v4 — no behavior change — but you should update your models:

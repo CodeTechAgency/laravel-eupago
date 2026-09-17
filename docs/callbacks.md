@@ -1,6 +1,6 @@
 ---
 title: Callbacks
-weight: 9
+weight: 10
 group: Handling payments
 ---
 
@@ -14,9 +14,10 @@ The package registers one endpoint per payment method:
 | MB WAY         | `GET /eupago/mbway/callback`  | `MBWayReferencePaid`     |
 | PayShop        | `GET /eupago/payshop/callback`| `PayShopReferencePaid`   |
 | PaysafeCard    | `GET /eupago/paysafecard/callback` | `PaysafeCardReferencePaid` |
+| Credit Card    | `GET /eupago/creditcard/callback` | `CreditCardReferencePaid` |
 
 Each callback validates the payload (including the channel and API key), matches the
-pending reference on `referencia` and value, marks it as paid, and fires the
+pending reference against the values Eupago echoes back, marks it as paid, and fires the
 corresponding event with the reference as payload.
 
 All callbacks receive the same query parameters:

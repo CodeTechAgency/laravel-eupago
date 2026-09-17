@@ -1,6 +1,6 @@
 ---
 title: Querying reference status
-weight: 10
+weight: 11
 group: Handling payments
 ---
 
