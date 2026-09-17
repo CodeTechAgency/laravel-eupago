@@ -4,7 +4,9 @@ namespace CodeTech\EuPago;
 
 use CodeTech\EuPago\Auth\TokenProvider;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
 class EuPago
@@ -135,24 +137,50 @@ class EuPago
         ], fn ($value) => $value !== null);
 
         $response = Http::withToken((new TokenProvider)->token())
-            ->post($this->getBaseUri().static::REFUND_URI.$transactionId, $params)
-            ->throwIfServerError();
+            ->post($this->getBaseUri().static::REFUND_URI.$transactionId, $params);
 
-        $refundData = $response->json();
+        return $this->mappedRefundKeys($this->parseTransactionResponse($response));
+    }
 
-        if (! is_array($refundData)) {
-            $refundData = [];
+    /**
+     * Parses a response of the v1.02 API (credit card, refunds, ...), whose
+     * body is a transaction envelope: `transactionStatus` plus, on rejection,
+     * a `code` and `text`.
+     *
+     * Rejections come back as client errors with a structured body, so they
+     * land in the error bag instead of throwing. Server errors throw, as do
+     * client errors without a structured body (e.g. auth failures).
+     *
+     * @throws RequestException
+     */
+    protected function parseTransactionResponse(Response $response): array
+    {
+        $response->throwIfServerError();
+
+        $transactionData = $response->json();
+
+        if (! is_array($transactionData)) {
+            $transactionData = [];
         }
 
-        if ($response->clientError() && ! isset($refundData['transactionStatus'])) {
+        if ($response->clientError() && ! isset($transactionData['transactionStatus'])) {
             $response->throw();
         }
 
-        if (($refundData['transactionStatus'] ?? null) !== 'Success') {
-            $this->addError($refundData['code'] ?? null, $refundData['text'] ?? null);
+        if (($transactionData['transactionStatus'] ?? null) !== 'Success') {
+            $this->addError($transactionData['code'] ?? null, $transactionData['text'] ?? null);
         }
 
-        return $this->mappedRefundKeys($refundData);
+        return $transactionData;
+    }
+
+    /**
+     * Returns a JSON request authenticated by the API key in the
+     * Authorization header, as the v1.02 payment endpoints expect.
+     */
+    protected function withApiKey(): PendingRequest
+    {
+        return Http::withHeaders(['Authorization' => 'ApiKey '.config('eupago.api_key')]);
     }
 
     /**

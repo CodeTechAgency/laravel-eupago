@@ -8,7 +8,7 @@
 [![GitHub license](https://img.shields.io/github/license/CodeTechAgency/laravel-eupago?style=flat-square)](https://github.com/CodeTechAgency/laravel-eupago/blob/master/LICENSE)
 
 Accept the payment methods used in Portugal — Multibanco references, MB WAY, PayShop,
-and PaysafeCard — in your Laravel application, through the
+PaysafeCard, and Credit Card — in your Laravel application, through the
 [Eupago](https://www.eupago.pt) payment gateway. The package covers everything from
 creating a payment on any of your Eloquent models to the webhook that confirms it,
 behind a simple API.

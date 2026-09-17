@@ -1,9 +1,11 @@
 <?php
 
+use CodeTech\EuPago\Models\CreditCardReference;
 use CodeTech\EuPago\Models\MbReference;
 use CodeTech\EuPago\Models\MbwayReference;
 use CodeTech\EuPago\Models\PaysafeCardReference;
 use CodeTech\EuPago\Models\PayShopReference;
+use CodeTech\EuPago\Traits\HasCreditCardReferences;
 use CodeTech\EuPago\Traits\HasMbWayReferences;
 use CodeTech\EuPago\Traits\HasMultibancoReferences;
 use CodeTech\EuPago\Traits\HasPaysafeCardReferences;
@@ -18,7 +20,7 @@ use Illuminate\Support\Facades\Schema;
 
 class DummyPayable extends Model
 {
-    use HasMbWayReferences, HasMultibancoReferences, HasPaysafeCardReferences, HasPayShopReferences;
+    use HasCreditCardReferences, HasMbWayReferences, HasMultibancoReferences, HasPaysafeCardReferences, HasPayShopReferences;
 
     protected $table = 'dummy_payables';
 
@@ -103,6 +105,41 @@ it('creates and persists a PaysafeCard reference via the trait helper', function
         ->and($reference->reference)->toBe('000017428')
         ->and($reference->url)->toBe('https://sandbox.eupago.pt/paysafecard/pay/abc123')
         ->and($this->payable->paysafeCardReferences()->count())->toBe(1);
+});
+
+it('creates and persists a Credit Card reference via the trait helper', function () {
+    Http::fake(['*' => Http::response([
+        'transactionStatus' => 'Success',
+        'transactionID' => '6526ds26653sad5489sa32',
+        'reference' => '00235',
+        'redirectUrl' => 'https://sandbox.eupago.pt/api/extern/creditcard/form/6526ds26653sad5489sa32',
+    ])]);
+
+    $reference = $this->payable->createCreditCardReference(
+        30.00, 'order-50', 'https://shop.test/success', 'https://shop.test/fail', 'https://shop.test/back', 'customer@shop.test'
+    );
+
+    expect($reference)->toBeInstanceOf(CreditCardReference::class)
+        ->and($reference->identifier)->toBe('order-50')
+        ->and($reference->form_transaction_id)->toBe('6526ds26653sad5489sa32')
+        ->and($reference->transaction_id)->toBeNull()
+        ->and($reference->reference)->toBe('00235')
+        ->and($reference->url)->toBe('https://sandbox.eupago.pt/api/extern/creditcard/form/6526ds26653sad5489sa32')
+        ->and($this->payable->creditCardReferences()->count())->toBe(1);
+});
+
+it('returns the errors and persists nothing when a Credit Card request is rejected', function () {
+    Http::fake(['*' => Http::response([
+        'transactionStatus' => 'Rejected', 'code' => 'APIKEY_MISSING', 'text' => 'API Key was not available in the request',
+    ], 401)]);
+
+    $result = $this->payable->createCreditCardReference(
+        30.00, 'order-50', 'https://shop.test/success', 'https://shop.test/fail', 'https://shop.test/back', 'customer@shop.test'
+    );
+
+    expect($result)->toBeArray()
+        ->and($result)->toHaveKey('APIKEY_MISSING')
+        ->and($this->payable->creditCardReferences()->count())->toBe(0);
 });
 
 it('returns the errors and persists nothing when the API reports failure', function () {

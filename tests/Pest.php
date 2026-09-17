@@ -1,5 +1,6 @@
 <?php
 
+use CodeTech\EuPago\Models\CreditCardReference;
 use CodeTech\EuPago\Models\MbReference;
 use CodeTech\EuPago\Models\MbwayReference;
 use CodeTech\EuPago\Models\PaysafeCardReference;
@@ -156,5 +157,46 @@ function validPaysafeCardCallbackPayload(array $overrides = []): array
         'entidade' => '00001',
         'comissao' => '0.37',
         'local' => 'demo',
+    ], $overrides);
+}
+
+function createPendingCreditCardReference(array $overrides = []): CreditCardReference
+{
+    $reference = new CreditCardReference(array_merge([
+        'identifier' => 'order-50',
+        'form_transaction_id' => '01a0ae8496e0781e8cc890536c7dd0c8',
+        'reference' => '399215',
+        'url' => 'https://sandbox.eupago.pt/api/extern/creditcard/form/01a0ae8496e0781e8cc890536c7dd0c8',
+        'value' => 30.00,
+        'state' => 0,
+    ], $overrides));
+
+    $reference->creditcardable_id = 1;
+    $reference->creditcardable_type = 'Tests\\Dummy';
+    $reference->save();
+
+    return $reference;
+}
+
+/**
+ * A valid Credit Card webhook payload (Realtime 1.0, mp = CC:PT).
+ */
+function validCreditCardCallbackPayload(array $overrides = []): array
+{
+    // Mirrors the real EuPago webhook, captured 2026-09-17. Unlike the other
+    // methods, Credit Card sends `valor` unpadded ("30", not "30.00000"), and
+    // `entidade` carries a genuine entity even though the payment has none.
+    return array_merge([
+        'valor' => '30',
+        'canal' => config('eupago.channel'),
+        'referencia' => '399215',
+        'transacao' => '29753077',
+        'identificador' => 'order-50',
+        'mp' => 'CC:PT',
+        'chave_api' => config('eupago.api_key'),
+        'data' => now()->format('Y-m-d:H:i:s'),
+        'entidade' => '10047',
+        'comissao' => '1.14',
+        'local' => 'Sem Informação',
     ], $overrides);
 }

@@ -8,13 +8,14 @@ group: Getting started
 the payment methods used in Portugal — Multibanco references, MB WAY, PayShop, and more —
 through a single API. This package integrates that gateway into Laravel, end to end:
 
-- **Create payments** for Multibanco (MB), MB WAY, PayShop, and PaysafeCard.
+- **Create payments** for Multibanco (MB), MB WAY, PayShop, PaysafeCard, and Credit Card.
 - **Persist payment references** as Eloquent models, attached to any model of yours (an
   `Order`, an `Invoice`, …) through ready-made traits.
 - **Handle Eupago's webhooks** out of the box: the package ships the callback endpoints,
   validates the payload, marks the reference as paid, and fires an event
   (`MBReferencePaid`, `MBWayReferencePaid`, `PayShopReferencePaid`,
-  `PaysafeCardReferencePaid`) you can hook your business logic on.
+  `PaysafeCardReferencePaid`, `CreditCardReferencePaid`) you can hook your business
+  logic on.
 - **Query a reference's status** on demand, for reconciliation or missed callbacks.
 
 You can use it as a **full integration** (traits, models, webhooks) or as a **thin API

@@ -1,6 +1,6 @@
 ---
 title: Refunds
-weight: 11
+weight: 12
 group: Handling payments
 ---
 
