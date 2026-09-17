@@ -1,5 +1,21 @@
 # Upgrading
 
+## From v3.8.x to v3.9.0
+
+Multibanco, MB WAY, PayShop and PaysafeCard references now store the Eupago transaction their callback delivers, so a paid reference can be refunded through `$reference->transaction_id`. A new migration adds the column. Re-publish the migrations, which leaves the existing files untouched:
+
+```bash
+php artisan vendor:publish --provider=CodeTech\\EuPago\\Providers\\EuPagoServiceProvider --tag=migrations
+```
+
+Run the new migration:
+
+```bash
+php artisan migrate
+```
+
+References paid before the upgrade keep a null `transaction_id` — the value only ever exists in the callback payload, so there is nothing to backfill from.
+
 ## From v3.7.x to v3.8.0
 
 This release adds Credit Card support, which uses a new `credit_card_references` table. Re-publish the migrations (existing files are left untouched) and run the new one:

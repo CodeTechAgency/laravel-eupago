@@ -7,7 +7,8 @@ group: Handling payments
 Paid transactions can be refunded, partially or in full, through Eupago's management
 API. Refunds require the [OAuth client credentials](configuration.md#oauth-client-credentials)
 to be configured. The refund is keyed by the transaction id — the `transacao` value
-delivered by the payment [callback](callbacks.md):
+delivered by the payment [callback](callbacks.md), which the package also stores on the
+reference it marks as paid, so a stored reference carries it as `transaction_id`:
 
 ```php
 use CodeTech\EuPago\EuPago;

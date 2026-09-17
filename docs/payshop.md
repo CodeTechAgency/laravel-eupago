@@ -64,4 +64,6 @@ Retrieve the PayShop references:
 $payShopReferences = $order->payShopReferences;
 ```
 
-When the reference is paid, the [callback](callbacks.md) fires a `PayShopReferencePaid` event.
+When the reference is paid, the [callback](callbacks.md) fires a `PayShopReferencePaid`
+event and stores the Eupago transaction on the reference, so a paid reference can be
+[refunded](refunds.md) through `$reference->transaction_id`.

@@ -79,4 +79,6 @@ Retrieve the PaysafeCard references:
 $paysafeCardReferences = $order->paysafeCardReferences;
 ```
 
-When the payment is completed, the [callback](callbacks.md) fires a `PaysafeCardReferencePaid` event.
+When the payment is completed, the [callback](callbacks.md) fires a `PaysafeCardReferencePaid`
+event and stores the Eupago transaction on the reference, so a paid reference can be
+[refunded](refunds.md) through `$reference->transaction_id`.
