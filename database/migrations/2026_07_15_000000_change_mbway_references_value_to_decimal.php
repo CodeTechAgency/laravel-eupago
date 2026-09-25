@@ -13,10 +13,18 @@ return new class extends Migration
      * reference with an equality lookup — float rounding could make a
      * legitimate callback miss the row, leaving a real payment pending.
      *
+     * Skipped on SQLite: its column types are only affinities, so FLOAT and
+     * DECIMAL compare alike, and on Laravel 10 changing a SQLite column
+     * requires doctrine/dbal, which would abort every later migration.
+     *
      * @return void
      */
     public function up()
     {
+        if (Schema::getConnection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         Schema::table('mbway_references', function (Blueprint $table) {
             $table->decimal('value', 10, 2)->default(0)->change();
         });
@@ -33,6 +41,10 @@ return new class extends Migration
      */
     public function down()
     {
+        if (Schema::getConnection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         Schema::table('mbway_references', function (Blueprint $table) {
             $table->float('value')->default(0)->change();
         });
