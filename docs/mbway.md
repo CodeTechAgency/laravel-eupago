@@ -5,7 +5,21 @@ group: Payment methods
 ---
 
 Create an MB WAY payment request — the customer confirms it on their phone through the
-MB WAY app:
+MB WAY app.
+
+References are stored against your own models, so add the `HasMbWayReferences` trait to each
+model that takes MB WAY payments:
+
+```php
+use CodeTech\EuPago\Traits\HasMbWayReferences;
+
+class Order extends Model
+{
+    use HasMbWayReferences;
+}
+```
+
+Then create the payment and save it through the trait's relationship:
 
 ```php
 use CodeTech\EuPago\MBWay\MBWay;
@@ -32,18 +46,10 @@ try {
 }
 ```
 
-## Using the trait
+## Creating and saving in one call
 
-Alternatively, use the `HasMbWayReferences` trait:
-
-```php
-use CodeTech\EuPago\Traits\HasMbWayReferences;
-
-class Order extends Model
-{
-    use HasMbWayReferences;
-}
-```
+The trait can also create and persist a reference in a single call. It returns the
+persisted reference on success, or the errors on failure:
 
 ```php
 $reference = $order->createMbwayReference($value, $id, $alias);
