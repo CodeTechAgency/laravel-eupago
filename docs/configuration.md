@@ -43,7 +43,7 @@ The package supports two levels of usage:
 - **Full integration** (default): use the traits and models to persist references, and let the
   package handle Eupago's webhooks — it registers the callback routes (`/eupago/*/callback`)
   automatically.
-- **Thin API client**: use only the payment classes (e.g. `new MB(...)->create()`) and handle
+- **Thin API client**: use only the payment classes (e.g. `(new MB(...))->create()`) and handle
   persistence and webhooks yourself.
 
 If you only need the thin client, disable the automatic route registration:

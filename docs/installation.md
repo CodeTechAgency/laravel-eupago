@@ -15,7 +15,7 @@ The service provider is registered automatically via package discovery.
 Publish the migrations:
 
 ```bash
-php artisan vendor:publish --provider="CodeTech\EuPago\Providers\EuPagoServiceProvider" --tag=migrations
+php artisan vendor:publish --provider="CodeTech\EuPago\Providers\EuPagoServiceProvider" --tag=eupago-migrations
 ```
 
 Run the migrations:
@@ -27,11 +27,11 @@ php artisan migrate
 Optionally, publish the configuration file:
 
 ```bash
-php artisan vendor:publish --provider="CodeTech\EuPago\Providers\EuPagoServiceProvider" --tag=config
+php artisan vendor:publish --provider="CodeTech\EuPago\Providers\EuPagoServiceProvider" --tag=eupago-config
 ```
 
 You can also publish the translations:
 
 ```bash
-php artisan vendor:publish --provider="CodeTech\EuPago\Providers\EuPagoServiceProvider" --tag=translations
+php artisan vendor:publish --provider="CodeTech\EuPago\Providers\EuPagoServiceProvider" --tag=eupago-translations
 ```

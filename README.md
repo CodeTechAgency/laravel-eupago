@@ -22,7 +22,7 @@ composer require codetech/laravel-eupago
 Publish the migrations:
 
 ```bash
-php artisan vendor:publish --provider="CodeTech\EuPago\Providers\EuPagoServiceProvider" --tag=migrations
+php artisan vendor:publish --provider="CodeTech\EuPago\Providers\EuPagoServiceProvider" --tag=eupago-migrations
 ```
 
 Run the migrations:
