@@ -66,16 +66,20 @@ class EuPagoServiceProvider extends ServiceProvider
      */
     private function setPublishableFiles()
     {
+        // The unprefixed tags are kept for backward compatibility; the docs use the prefixed ones.
         $this->publishes([
             __DIR__.'/../../database/migrations/' => database_path('migrations'),
-        ], 'migrations');
+        ], ['eupago-migrations', 'migrations']);
 
+        // Publishing into resources/lang would create that directory, and Laravel
+        // then uses it as the app's lang path instead of lang/, hiding the app's
+        // own translations.
         $this->publishes([
-            __DIR__.'/../../resources/lang' => resource_path('lang/vendor/eupago'),
-        ], 'translations');
+            __DIR__.'/../../resources/lang' => $this->app->langPath('vendor/eupago'),
+        ], ['eupago-translations', 'translations']);
 
         $this->publishes([
             __DIR__.'/../../config/eupago.php' => config_path('eupago.php'),
-        ], 'config');
+        ], ['eupago-config', 'config']);
     }
 }

@@ -4,7 +4,19 @@ weight: 7
 group: Payment methods
 ---
 
-Create a PayShop reference:
+References are stored against your own models, so add the `HasPayShopReferences` trait to each
+model that takes PayShop references:
+
+```php
+use CodeTech\EuPago\Traits\HasPayShopReferences;
+
+class Order extends Model
+{
+    use HasPayShopReferences;
+}
+```
+
+Then create the payment and save it through the trait's relationship:
 
 ```php
 use CodeTech\EuPago\PayShop\PayShop;
@@ -41,18 +53,10 @@ try {
 ]
 ```
 
-## Using the trait
+## Creating and saving in one call
 
-Alternatively, use the `HasPayShopReferences` trait:
-
-```php
-use CodeTech\EuPago\Traits\HasPayShopReferences;
-
-class Order extends Model
-{
-    use HasPayShopReferences;
-}
-```
+The trait can also create and persist a reference in a single call. It returns the
+persisted reference on success, or the errors on failure:
 
 ```php
 $reference = $order->createPayShopReference($value, $id);

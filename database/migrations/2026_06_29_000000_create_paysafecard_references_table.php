@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('url')->nullable();
             $table->decimal('value', 10, 2)->default(0);
             $table->integer('state')->default(0);
-            $table->morphs('paysafecardable');
+            $table->morphs('paysafecardable', 'paysafecard_references_morph_index');
             $table->timestamps();
         });
     }

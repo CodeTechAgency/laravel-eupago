@@ -11,6 +11,20 @@ returns a payment `url` that you must redirect the customer to, along with a
 and you may optionally pass a `url_retorno` to control where the customer lands
 after paying.
 
+References are stored against your own models, so add the `HasPaysafeCardReferences` trait to each
+model that takes PaysafeCard payments:
+
+```php
+use CodeTech\EuPago\Traits\HasPaysafeCardReferences;
+
+class Order extends Model
+{
+    use HasPaysafeCardReferences;
+}
+```
+
+Then create the payment and save it through the trait's relationship:
+
 ```php
 use CodeTech\EuPago\PaysafeCard\PaysafeCard;
 
@@ -52,20 +66,9 @@ try {
 ]
 ```
 
-## Using the trait
+## Creating and saving in one call
 
-Alternatively, use the `HasPaysafeCardReferences` trait:
-
-```php
-use CodeTech\EuPago\Traits\HasPaysafeCardReferences;
-
-class Order extends Model
-{
-    use HasPaysafeCardReferences;
-}
-```
-
-With the trait applied, you can create and persist a reference in a single call. It
+The trait can also create and persist a reference in a single call. It
 returns the persisted reference (whose `url` you redirect to) on success, or the errors
 on failure:
 

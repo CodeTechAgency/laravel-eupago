@@ -11,6 +11,20 @@ own `id` (e.g. the order id), which Eupago echoes back in the callback as
 `identificador`, the customer's email, and the three URLs the customer is forwarded to
 when the payment succeeds, fails, or they press back on the form.
 
+References are stored against your own models, so add the `HasCreditCardReferences` trait to each
+model that takes Credit Card payments:
+
+```php
+use CodeTech\EuPago\Traits\HasCreditCardReferences;
+
+class Order extends Model
+{
+    use HasCreditCardReferences;
+}
+```
+
+Then create the payment and save it through the trait's relationship:
+
 ```php
 use CodeTech\EuPago\CreditCard\CreditCard;
 
@@ -85,20 +99,9 @@ $creditCard->getErrors();
 // ['APIKEY_MISSING' => 'API Key was not available in the request']
 ```
 
-## Using the trait
+## Creating and saving in one call
 
-Alternatively, use the `HasCreditCardReferences` trait:
-
-```php
-use CodeTech\EuPago\Traits\HasCreditCardReferences;
-
-class Order extends Model
-{
-    use HasCreditCardReferences;
-}
-```
-
-With the trait applied, you can create and persist a reference in a single call. It
+The trait can also create and persist a reference in a single call. It
 returns the persisted reference (whose `url` you redirect to) on success, or the errors
 on failure:
 
