@@ -2,6 +2,8 @@
 
 namespace CodeTech\EuPago\Models;
 
+use CodeTech\EuPago\Enums\ReferenceState;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class MbwayReference extends Model
@@ -31,11 +33,12 @@ class MbwayReference extends Model
     /**
      * Scopes a query to only include paid references.
      *
-     * @return mixed
+     * @param  Builder<static>  $query
+     * @return Builder<static>
      */
     public function scopePaid($query)
     {
-        return $query->where('state', 1);
+        return $query->where('state', ReferenceState::Paid->value);
     }
 
     /*
