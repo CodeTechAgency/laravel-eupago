@@ -29,7 +29,7 @@ abstract class CallbackRequest
     public function rules(): array
     {
         return array_merge(static::callerRules(), [
-            'valor' => 'required',
+            'valor' => 'required|numeric',
             'referencia' => ['required'],
             'transacao' => 'required',
             'identificador' => 'required',

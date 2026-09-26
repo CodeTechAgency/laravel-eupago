@@ -38,6 +38,14 @@ it('rejects a payment method that is not a string', function () {
     $response->assertStatus(422)->assertJsonStructure(['mp']);
 });
 
+it('rejects a value that is not numeric', function () {
+    createPendingMbReference();
+
+    $response = $this->getJson(route('eupago.callback', validMbCallbackPayload(['valor' => 'abc'])));
+
+    $response->assertStatus(422)->assertJsonStructure(['valor']);
+});
+
 it('checks the api key before the payment method', function () {
     $response = $this->getJson(route('eupago.callback', validMbCallbackPayload([
         'mp' => 'XX:PT',
