@@ -104,6 +104,8 @@ class CreditCard extends EuPago
      */
     public function create(): array
     {
+        $this->clearErrors();
+
         $response = $this->withApiKey()->post($this->getBaseUri().static::URI, $this->getParams());
 
         return $this->mappedReferenceKeys($this->parseTransactionResponse($response));

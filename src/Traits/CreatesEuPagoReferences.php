@@ -27,6 +27,10 @@ trait CreatesEuPagoReferences
             return $payment->getErrors();
         }
 
-        return $this->{$relation}()->create($referenceData);
+        // The result also carries keys that are not columns (success, response,
+        // ...), which a strict model refuses after Eupago created the payment.
+        $reference = $this->{$relation}();
+
+        return $reference->create(array_intersect_key($referenceData, array_flip($reference->getRelated()->getFillable())));
     }
 }

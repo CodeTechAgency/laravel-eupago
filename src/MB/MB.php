@@ -2,8 +2,8 @@
 
 namespace CodeTech\EuPago\MB;
 
-use Carbon\Carbon;
 use CodeTech\EuPago\EuPago;
+use DateTimeInterface;
 
 class MB extends EuPago
 {
@@ -64,7 +64,7 @@ class MB extends EuPago
     /**
      * MB constructor.
      */
-    public function __construct(float $value, string $id, Carbon $startDate, Carbon $endDate, float $minValue, float $maxValue, bool $allowDuplication = false)
+    public function __construct(float $value, string $id, DateTimeInterface $startDate, DateTimeInterface $endDate, float $minValue, float $maxValue, bool $allowDuplication = false)
     {
         $this->value = $value;
         $this->id = $id;

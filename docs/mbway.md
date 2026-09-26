@@ -28,7 +28,7 @@ $order = Order::find(1);
 
 $mbway = new MBWay(
     $order->value,     // payment value
-    $order->id,        // your identifier (int), echoed back as `identificador` in the callback
+    $order->id,        // your identifier, echoed back as `identificador` in the callback
     '912345678',       // the customer's MB WAY alias (phone number)
     'Order #1'         // optional description
 );

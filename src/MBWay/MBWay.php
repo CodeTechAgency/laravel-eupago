@@ -21,7 +21,7 @@ class MBWay extends EuPago
     /**
      * External identifier. Ex: the order id.
      *
-     * @var int
+     * @var int|string
      */
     protected $id;
 
@@ -42,7 +42,7 @@ class MBWay extends EuPago
     /**
      * MBWay constructor.
      */
-    public function __construct(float $value, int $id, string $alias, ?string $description = null)
+    public function __construct(float $value, int|string $id, string $alias, ?string $description = null)
     {
         $this->value = $value;
         $this->id = $id;

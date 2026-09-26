@@ -68,6 +68,8 @@ class EuPago
      */
     public function create(): array
     {
+        $this->clearErrors();
+
         $response = Http::asForm()->post($this->getBaseUri().static::URI, $this->getParams())->throw();
 
         $referenceData = $response->json();
@@ -91,6 +93,8 @@ class EuPago
      */
     public function status(string $reference, ?string $entity = null): array
     {
+        $this->clearErrors();
+
         $params = [
             'chave' => config('eupago.api_key'),
             'referencia' => $reference,
@@ -129,6 +133,8 @@ class EuPago
      */
     public function refund(int|string $transactionId, float $amount, ?string $reason = null, ?string $iban = null, ?string $bic = null): array
     {
+        $this->clearErrors();
+
         $params = array_filter([
             'amount' => $amount,
             'reason' => $reason,
@@ -137,7 +143,7 @@ class EuPago
         ], fn ($value) => $value !== null);
 
         $response = Http::withToken((new TokenProvider)->token())
-            ->post($this->getBaseUri().static::REFUND_URI.$transactionId, $params);
+            ->post($this->getBaseUri().static::REFUND_URI.rawurlencode((string) $transactionId), $params);
 
         return $this->mappedRefundKeys($this->parseTransactionResponse($response));
     }
@@ -197,6 +203,15 @@ class EuPago
     public function hasErrors(): bool
     {
         return count($this->errors) > 0;
+    }
+
+    /**
+     * Empties the error bag, so a reused instance only reports the errors of
+     * its latest operation.
+     */
+    protected function clearErrors(): void
+    {
+        $this->errors = [];
     }
 
     /**
