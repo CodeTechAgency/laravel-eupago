@@ -19,9 +19,9 @@ jobs:
         # PHPUnit ^11.5, so Laravel 10 rows always get Pest 2; Testbench 9+ rows
         # resolve Pest 3.
         include:
-          - { php: '8.1', laravel: '10.*', testbench: '8.*' }
-          - { php: '8.2', laravel: '10.*', testbench: '8.*' }
-          - { php: '8.3', laravel: '10.*', testbench: '8.*' }
+          - { php: '8.1', laravel: '10.*', testbench: '8.*', guzzle: '^7.2' }
+          - { php: '8.2', laravel: '10.*', testbench: '8.*', guzzle: '^7.2' }
+          - { php: '8.3', laravel: '10.*', testbench: '8.*', guzzle: '^7.2' }
           - { php: '8.2', laravel: '11.*', testbench: '9.*' }
           - { php: '8.3', laravel: '11.*', testbench: '9.*' }
           - { php: '8.4', laravel: '11.*', testbench: '9.*' }
@@ -53,10 +53,61 @@ jobs:
             "laravel/framework:${{ matrix.laravel }}" \
             "orchestra/testbench:${{ matrix.testbench }}" \
             --no-interaction --no-update
+          # Laravel 10 only suggests Guzzle, leaving it to the app, whose
+          # skeleton requires ^7.2; later versions require it themselves.
+          if [ -n "${{ matrix.guzzle }}" ]; then
+            composer require "guzzlehttp/guzzle:${{ matrix.guzzle }}" --no-interaction --no-update
+          fi
           composer update --prefer-dist --no-interaction --no-progress
 
       - name: Run tests
         run: vendor/bin/pest
+
+  install:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { php: '8.3', laravel: '10' }
+          - { php: '8.4', laravel: '11' }
+          - { php: '8.4', laravel: '12' }
+          - { php: '8.4', laravel: '13' }
+
+    name: Install in Laravel ${{ matrix.laravel }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          path: package
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, fileinfo, pdo, sqlite3, pdo_sqlite
+          coverage: none
+
+      # The app's dependencies are installed before the package is added, as in
+      # a real app, so a constraint that conflicts with what the framework
+      # already locked fails here. Resolved together, Composer would quietly
+      # pick versions that satisfy both.
+      - name: Create a Laravel application
+        run: |
+          composer create-project "laravel/laravel:^${{ matrix.laravel }}.0" app --no-install --no-scripts --no-interaction
+          cd app
+          # Laravel 10 is EOL and carries unpatched advisories; allow installing it.
+          composer config --no-plugins policy.advisories.block false
+          composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Install the package
+        working-directory: app
+        run: |
+          composer config repositories.eupago '{"type": "path", "url": "../package", "options": {"symlink": false, "versions": {"codetech/laravel-eupago": "dev-ci"}}}'
+          composer require codetech/laravel-eupago:dev-ci --no-interaction --no-progress
+          php artisan route:list --path=eupago
 
   dependency-check:
     runs-on: ubuntu-latest

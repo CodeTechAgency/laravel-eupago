@@ -23,7 +23,6 @@
   "license": "MIT",
   "require": {
     "php": "^8.1",
-    "guzzlehttp/guzzle": "^7.0",
     "illuminate/broadcasting": "^10.0|^11.0|^12.0|^13.0",
     "illuminate/cache": "^10.0|^11.0|^12.0|^13.0",
     "illuminate/database": "^10.0|^11.0|^12.0|^13.0",
@@ -34,6 +33,9 @@
     "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
     "illuminate/validation": "^10.0|^11.0|^12.0|^13.0",
     "nesbot/carbon": "^2.0|^3.0"
+  },
+  "suggest": {
+    "guzzlehttp/guzzle": "Required on Laravel 10 (^7.2), which leaves Guzzle to the application; later versions install it themselves."
   },
   "autoload": {
     "psr-4": {
