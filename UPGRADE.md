@@ -56,10 +56,14 @@ https://your-app.test/eupago/callback
 
 The per-method routes now point at `CallbackController`, so build their URLs by route name (`route('eupago.mb.callback')`) rather than by controller action.
 
-If you disabled the package routes and mounted a per-method controller on a route of your own, it still confirms only that method. Point your route at `CallbackController` instead, keeping its path so the URL set in the backoffice keeps working, and take it out of the `web` middleware group, which stores the URL — API key included — in the session:
+If you disabled the package routes and mounted a per-method controller on a route of your own, it still confirms only that method. Point your route at `CallbackController` instead. Keep its path, so the URL set in the backoffice keeps working, and set its method as the fallback for a notification whose `mp` the package does not know. Take it out of the `web` middleware group too, which stores the URL — API key included — in the session:
 
 ```php
+use CodeTech\EuPago\Enums\PaymentMethod;
+use CodeTech\EuPago\Http\Controllers\CallbackController;
+
 Route::get('webhooks/eupago/mb', [CallbackController::class, 'callback'])
+    ->defaults('default_payment_method', PaymentMethod::Multibanco->value)
     ->withoutMiddleware('web')
     ->name('eupago.mb.callback');
 ```
