@@ -97,3 +97,27 @@ it('reuses the cached token across refunds', function () {
 
     Http::assertSentCount(3);
 });
+
+it('encodes the transaction id in the refund URL', function () {
+    fakeRefund(['transactionStatus' => 'Success', 'refundId' => '12345']);
+
+    (new EuPago)->refund('12/34?x', 10.50);
+
+    Http::assertSent(fn ($request) => str_ends_with($request->url(), '/refund/12%2F34%3Fx'));
+});
+
+it('reports only the errors of the latest refund on a reused instance', function () {
+    Http::fake([
+        '*/api/auth/token' => Http::response(['access_token' => 'the-token', 'token_type' => 'Bearer', 'expires_in' => 3600]),
+        '*/api/management/*' => Http::sequence()
+            ->push(['transactionStatus' => 'Rejected', 'code' => 'AMOUNT', 'text' => 'Invalid amount'], 400)
+            ->push(['transactionStatus' => 'Success', 'refundId' => '12345'], 201),
+    ]);
+    $eupago = new EuPago;
+
+    $eupago->refund(987654, 999.00);
+    expect($eupago->hasErrors())->toBeTrue();
+
+    $eupago->refund(987654, 10.50);
+    expect($eupago->hasErrors())->toBeFalse();
+});

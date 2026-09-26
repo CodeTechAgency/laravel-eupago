@@ -28,7 +28,7 @@ trait HasMbWayReferences
      * @throws ConnectionException
      * @throws RequestException
      */
-    public function createMbwayReference(float $value, int $id, string $alias, ?string $description = null)
+    public function createMbwayReference(float $value, int|string $id, string $alias, ?string $description = null)
     {
         return $this->persistReference(
             new MBWay($value, $id, $alias, $description),

@@ -2,9 +2,9 @@
 
 namespace CodeTech\EuPago\Traits;
 
-use Carbon\Carbon;
 use CodeTech\EuPago\MB\MB;
 use CodeTech\EuPago\Models\MbReference;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
@@ -29,7 +29,7 @@ trait HasMultibancoReferences
      * @throws ConnectionException
      * @throws RequestException
      */
-    public function createMbReference(float $value, string $id, Carbon $startDate, Carbon $endDate, float $minValue, float $maxValue, bool $allowDuplication = false)
+    public function createMbReference(float $value, string $id, DateTimeInterface $startDate, DateTimeInterface $endDate, float $minValue, float $maxValue, bool $allowDuplication = false)
     {
         return $this->persistReference(
             new MB($value, $id, $startDate, $endDate, $minValue, $maxValue, $allowDuplication),

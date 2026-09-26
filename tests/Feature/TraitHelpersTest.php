@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\CarbonImmutable;
 use CodeTech\EuPago\Models\CreditCardReference;
 use CodeTech\EuPago\Models\MbReference;
 use CodeTech\EuPago\Models\MbwayReference;
@@ -49,6 +50,61 @@ beforeEach(function () {
     }
 
     $this->payable = DummyPayable::create();
+});
+
+afterEach(function () {
+    Model::preventSilentlyDiscardingAttributes(false);
+});
+
+it('persists only the reference attributes, so strict models accept them', function () {
+    Model::preventSilentlyDiscardingAttributes();
+    Http::fake([
+        '*/multibanco/*' => Http::response([
+            'sucesso' => true, 'estado' => 0, 'resposta' => 'OK',
+            'entidade' => '12345', 'referencia' => '123456789', 'valor' => 10.50,
+            'valor_minimo' => 10.50, 'valor_maximo' => 10.50,
+            'data_inicio' => '2026-06-01', 'data_fim' => '2026-06-30',
+        ]),
+        '*/creditcard/*' => Http::response([
+            'transactionStatus' => 'Success',
+            'transactionID' => '6526ds26653sad5489sa32',
+            'reference' => '00235',
+            'redirectUrl' => 'https://sandbox.eupago.pt/api/extern/creditcard/form/6526ds26653sad5489sa32',
+        ]),
+    ]);
+
+    $mb = $this->payable->createMbReference(10.50, '1', now(), now()->addMonth(), 10.50, 10.50);
+    $creditCard = $this->payable->createCreditCardReference(
+        30.00, 'order-50', 'https://shop.test/success', 'https://shop.test/fail', 'https://shop.test/back', 'customer@shop.test'
+    );
+
+    expect($mb)->toBeInstanceOf(MbReference::class)
+        ->and($creditCard)->toBeInstanceOf(CreditCardReference::class);
+});
+
+it('creates an MB reference from immutable dates', function () {
+    Http::fake(['*' => Http::response([
+        'sucesso' => true, 'estado' => 0, 'resposta' => 'OK',
+        'entidade' => '12345', 'referencia' => '123456789', 'valor' => 10.50,
+        'valor_minimo' => 10.50, 'valor_maximo' => 10.50,
+        'data_inicio' => '2026-06-01', 'data_fim' => '2026-06-30',
+    ])]);
+
+    $reference = $this->payable->createMbReference(10.50, '1', CarbonImmutable::parse('2026-06-01'), CarbonImmutable::parse('2026-06-30'), 10.50, 10.50);
+
+    expect($reference)->toBeInstanceOf(MbReference::class);
+    Http::assertSent(fn ($request) => $request['data_inicio'] === '2026-06-01' && $request['data_fim'] === '2026-06-30');
+});
+
+it('sends a string MB Way identifier as given', function () {
+    Http::fake(['*' => Http::response([
+        'sucesso' => true, 'estado' => 0, 'resposta' => 'OK',
+        'referencia' => '987654321', 'valor' => 15.00, 'alias' => '912345678',
+    ])]);
+
+    $this->payable->createMbwayReference(15.00, '007', '912345678');
+
+    Http::assertSent(fn ($request) => $request['id'] === '007');
 });
 
 it('creates and persists an MB reference via the trait helper', function () {
