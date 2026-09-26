@@ -55,8 +55,9 @@ class EuPagoServiceProvider extends ServiceProvider
             return;
         }
 
-        Route::middleware('web')
-            ->prefix('eupago')
+        // No middleware: a webhook has no use for a session, and the web group
+        // would start one for every call, storing its URL — API key included.
+        Route::prefix('eupago')
             ->name('eupago.')
             ->group(__DIR__.'/../../routes/web.php');
     }

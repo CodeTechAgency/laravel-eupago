@@ -19,6 +19,7 @@ class RoutesDisabledTest extends TestCase
 
     public function test_no_callback_routes_are_registered_when_routes_are_disabled(): void
     {
+        $this->assertFalse(app('router')->has('eupago.callback'));
         $this->assertFalse(app('router')->has('eupago.mb.callback'));
         $this->assertFalse(app('router')->has('eupago.mbway.callback'));
         $this->assertFalse(app('router')->has('eupago.payshop.callback'));

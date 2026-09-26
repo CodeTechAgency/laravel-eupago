@@ -1,10 +1,7 @@
 <?php
 
-use CodeTech\EuPago\Http\Controllers\CreditCardController;
-use CodeTech\EuPago\Http\Controllers\MBController;
-use CodeTech\EuPago\Http\Controllers\MBWayController;
-use CodeTech\EuPago\Http\Controllers\PaysafeCardController;
-use CodeTech\EuPago\Http\Controllers\PayShopController;
+use CodeTech\EuPago\Enums\PaymentMethod;
+use CodeTech\EuPago\Http\Controllers\CallbackController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,27 +10,25 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// MB
-Route::prefix('mb')->name('mb.')->group(function () {
-    Route::get('callback', [MBController::class, 'callback'])->name('callback');
-});
+Route::get('callback', [CallbackController::class, 'callback'])->name('callback');
 
-// MB Way
-Route::prefix('mbway')->name('mbway.')->group(function () {
-    Route::get('callback', [MBWayController::class, 'callback'])->name('callback');
-});
+/*
+| Deprecated, to be removed in v4. A channel takes a single notification URL,
+| so these are aliases of the endpoint above, kept for the URLs already set
+| in Eupago's backoffice. Each falls back to its own payment method when a
+| notification's `mp` is not one the package knows.
+*/
 
-// PayShop
-Route::prefix('payshop')->name('payshop.')->group(function () {
-    Route::get('callback', [PayShopController::class, 'callback'])->name('callback');
-});
+$aliases = [
+    'mb' => PaymentMethod::Multibanco,
+    'mbway' => PaymentMethod::MbWay,
+    'payshop' => PaymentMethod::PayShop,
+    'paysafecard' => PaymentMethod::PaysafeCard,
+    'creditcard' => PaymentMethod::CreditCard,
+];
 
-// PaysafeCard
-Route::prefix('paysafecard')->name('paysafecard.')->group(function () {
-    Route::get('callback', [PaysafeCardController::class, 'callback'])->name('callback');
-});
-
-// Credit Card
-Route::prefix('creditcard')->name('creditcard.')->group(function () {
-    Route::get('callback', [CreditCardController::class, 'callback'])->name('callback');
-});
+foreach ($aliases as $prefix => $method) {
+    Route::get("{$prefix}/callback", [CallbackController::class, 'callback'])
+        ->defaults('default_payment_method', $method->value)
+        ->name("{$prefix}.callback");
+}

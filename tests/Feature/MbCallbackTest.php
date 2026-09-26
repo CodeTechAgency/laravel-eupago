@@ -1,6 +1,7 @@
 <?php
 
 use CodeTech\EuPago\Events\MBReferencePaid;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 
 it('marks a pending MB reference as paid and dispatches the event', function () {
@@ -31,12 +32,96 @@ it('returns 404 when the reference exists but the value does not match', functio
     Event::assertNotDispatched(MBReferencePaid::class);
 });
 
-it('returns 404 when the matching MB reference is already paid', function () {
-    createPendingMbReference(['state' => 1]);
+it('acknowledges a redelivered payment without recording or firing it again', function () {
+    Event::fake([MBReferencePaid::class]);
+    $reference = createPendingMbReference();
+
+    $this->getJson(route('eupago.mb.callback', validMbCallbackPayload()))->assertOk();
+    $response = $this->getJson(route('eupago.mb.callback', validMbCallbackPayload()));
+
+    $response->assertOk();
+    expect($reference->payments()->count())->toBe(1);
+    Event::assertDispatchedTimes(MBReferencePaid::class, 1);
+});
+
+it('returns 404 for a reference paid without its payments recorded', function () {
+    Event::fake([MBReferencePaid::class]);
+    // Paid before payments were recorded, so a new transaction cannot be told
+    // apart from a redelivery.
+    $reference = createPendingMbReference(['state' => 1, 'transaction_id' => 'TXN000']);
 
     $response = $this->getJson(route('eupago.mb.callback', validMbCallbackPayload()));
 
     $response->assertNotFound();
+    expect($reference->payments()->count())->toBe(0);
+    Event::assertNotDispatched(MBReferencePaid::class);
+});
+
+it('records the payment and passes it to the event', function () {
+    Event::fake([MBReferencePaid::class]);
+    $reference = createPendingMbReference();
+
+    $this->getJson(route('eupago.mb.callback', validMbCallbackPayload()))->assertOk();
+
+    $payment = $reference->payments()->sole();
+    expect($payment->transaction_id)->toBe('TXN123')
+        ->and($payment->value)->toBe(10.50);
+    Event::assertDispatched(
+        MBReferencePaid::class,
+        fn (MBReferencePaid $event) => $event->payment->is($payment)
+    );
+});
+
+it('confirms a payment within the reference amount range', function () {
+    Event::fake([MBReferencePaid::class]);
+    $reference = createPendingMbReference(['min_value' => 5, 'max_value' => 20]);
+
+    $response = $this->getJson(route('eupago.mb.callback', validMbCallbackPayload([
+        'valor' => '7.25000',
+    ])));
+
+    $response->assertOk();
+    expect((int) $reference->fresh()->state)->toBe(1)
+        ->and($reference->payments()->sole()->value)->toBe(7.25);
+});
+
+it('returns 404 when the value is outside the reference amount range', function () {
+    Event::fake([MBReferencePaid::class]);
+    createPendingMbReference(['min_value' => 5, 'max_value' => 20]);
+
+    $response = $this->getJson(route('eupago.mb.callback', validMbCallbackPayload([
+        'valor' => '20.01',
+    ])));
+
+    $response->assertNotFound();
+    Event::assertNotDispatched(MBReferencePaid::class);
+});
+
+it('confirms every payment of a reference that allows repeat payments', function () {
+    Event::fake([MBReferencePaid::class]);
+    $reference = createPendingMbReference();
+
+    $this->getJson(route('eupago.mb.callback', validMbCallbackPayload()))->assertOk();
+    $response = $this->getJson(route('eupago.mb.callback', validMbCallbackPayload([
+        'transacao' => 'TXN124',
+    ])));
+
+    $response->assertOk();
+    expect($reference->payments()->pluck('transaction_id')->all())->toBe(['TXN123', 'TXN124'])
+        ->and($reference->fresh()->transaction_id)->toBe('TXN124');
+    Event::assertDispatchedTimes(MBReferencePaid::class, 2);
+});
+
+it('fires the event after the payment is committed', function () {
+    $transactionLevel = null;
+    Event::listen(MBReferencePaid::class, function () use (&$transactionLevel) {
+        $transactionLevel = DB::transactionLevel();
+    });
+    createPendingMbReference();
+
+    $this->getJson(route('eupago.mb.callback', validMbCallbackPayload()))->assertOk();
+
+    expect($transactionLevel)->toBe(0);
 });
 
 it('rejects an MB callback for a reference that does not exist', function () {

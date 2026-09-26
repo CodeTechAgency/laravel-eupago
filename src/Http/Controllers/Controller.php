@@ -2,7 +2,10 @@
 
 namespace CodeTech\EuPago\Http\Controllers;
 
+use CodeTech\EuPago\Http\Requests\CallbackRequest;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Log;
@@ -12,6 +15,10 @@ class Controller extends BaseController
 {
     /**
      * Logs and validates an incoming EuPago callback, returning the validated data.
+     *
+     * The caller is checked on its own first, so a request without the
+     * channel and API key never reaches the remaining rules — some of which
+     * query the database and would otherwise reveal which references exist.
      */
     protected function validateCallback(Request $request, array $rules): array
     {
@@ -27,6 +34,71 @@ class Controller extends BaseController
             'payload' => $payload,
         ]);
 
+        $this->validateOrFail($request, CallbackRequest::callerRules());
+
+        return $this->validateOrFail($request, $rules);
+    }
+
+    /**
+     * Marks the pending reference the query finds as paid, then fires the
+     * given event with it.
+     *
+     * The reference row is locked, so of two simultaneous deliveries only one
+     * marks it as paid. The event fires after the commit, so a queued
+     * listener always finds the payment stored. A redelivered notification is
+     * acknowledged without firing the event again.
+     *
+     * @param  class-string  $event
+     */
+    protected function confirmPayment(Builder $query, string $transaction, string $event): JsonResponse
+    {
+        $model = $query->getModel();
+
+        if ($model->newQuery()->where('transaction_id', $transaction)->exists()) {
+            return $this->paymentConfirmed();
+        }
+
+        $reference = $model->getConnection()->transaction(function () use ($query, $transaction) {
+            $reference = $query->where('state', 0)->lockForUpdate()->first();
+
+            $reference?->update([
+                'state' => 1,
+                'transaction_id' => $transaction,
+            ]);
+
+            return $reference;
+        });
+
+        if (! $reference) {
+            return $this->pendingReferenceNotFound();
+        }
+
+        event(new $event($reference));
+
+        return $this->paymentConfirmed();
+    }
+
+    /**
+     * The response for a payment that was confirmed.
+     */
+    protected function paymentConfirmed(): JsonResponse
+    {
+        return response()->json(['response' => 'Success']);
+    }
+
+    /**
+     * The response for a payment that matches no pending reference.
+     */
+    protected function pendingReferenceNotFound(): JsonResponse
+    {
+        return response()->json(['response' => 'No pending reference found'], 404);
+    }
+
+    /**
+     * Validates the request against the rules, or aborts with a 422.
+     */
+    private function validateOrFail(Request $request, array $rules): array
+    {
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {

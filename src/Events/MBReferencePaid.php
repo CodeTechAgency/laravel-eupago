@@ -3,6 +3,7 @@
 namespace CodeTech\EuPago\Events;
 
 use CodeTech\EuPago\Models\MbReference;
+use CodeTech\EuPago\Models\MbReferencePayment;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -20,11 +21,21 @@ class MBReferencePaid
     public $reference;
 
     /**
+     * The payment that was made — a reference that allows repeat payments,
+     * or accepts an amount range, can be paid more than once and for
+     * amounts other than its value.
+     *
+     * @var MbReferencePayment|null
+     */
+    public $payment;
+
+    /**
      * MBReferencePaid constructor.
      */
-    public function __construct(MbReference $reference)
+    public function __construct(MbReference $reference, ?MbReferencePayment $payment = null)
     {
         $this->reference = $reference;
+        $this->payment = $payment;
     }
 
     /**

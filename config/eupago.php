@@ -56,8 +56,8 @@ return [
     | Routes
     |--------------------------------------------------------------------------
     |
-    | The package automatically registers the payment callback routes
-    | (e.g. /eupago/mb/callback). Disable this if you use the package as
+    | The package automatically registers the payment callback route
+    | (/eupago/callback). Disable this if you use the package as
     | a thin API client and handle EuPago's webhooks yourself.
     |
     */
