@@ -43,28 +43,31 @@ class Controller extends BaseController
      * Marks the pending reference the query finds as paid, then fires the
      * given event with it.
      *
-     * The reference row is locked, so of two simultaneous deliveries only one
-     * marks it as paid. The event fires after the commit, so a queued
-     * listener always finds the payment stored. A redelivered notification is
-     * acknowledged without firing the event again.
+     * The reference row is locked, and a reference already paid by this
+     * transaction is found as well, so of simultaneous deliveries only one
+     * marks it as paid and the others are acknowledged without firing the
+     * event again. The event fires after the commit, so a queued listener
+     * always finds the payment stored.
      *
      * @param  class-string  $event
      */
     protected function confirmPayment(Builder $query, string $transaction, string $event): JsonResponse
     {
-        $model = $query->getModel();
+        $reference = $query->getConnection()->transaction(function () use ($query, $transaction) {
+            // A reference already paid by this transaction comes first, so a
+            // redelivery never marks another pending match as paid.
+            $reference = $query
+                ->where(fn ($query) => $query->where('state', 0)->orWhere('transaction_id', $transaction))
+                ->orderByDesc('state')
+                ->lockForUpdate()
+                ->first();
 
-        if ($model->newQuery()->where('transaction_id', $transaction)->exists()) {
-            return $this->paymentConfirmed();
-        }
-
-        $reference = $model->getConnection()->transaction(function () use ($query, $transaction) {
-            $reference = $query->where('state', 0)->lockForUpdate()->first();
-
-            $reference?->update([
-                'state' => 1,
-                'transaction_id' => $transaction,
-            ]);
+            if ($reference && $reference->getAttribute('transaction_id') !== $transaction) {
+                $reference->update([
+                    'state' => 1,
+                    'transaction_id' => $transaction,
+                ]);
+            }
 
             return $reference;
         });
@@ -73,7 +76,9 @@ class Controller extends BaseController
             return $this->pendingReferenceNotFound();
         }
 
-        event(new $event($reference));
+        if ($reference->wasChanged('state')) {
+            event(new $event($reference));
+        }
 
         return $this->paymentConfirmed();
     }

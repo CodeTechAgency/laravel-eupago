@@ -86,3 +86,17 @@ it('rejects a Credit Card callback missing required fields', function () {
 
     $response->assertStatus(422);
 });
+
+it('acknowledges a redelivery without paying another matching reference', function () {
+    Event::fake([CreditCardReferencePaid::class]);
+    // Same counter, identifier and amount: only the recorded transaction
+    // tells the paid reference from the pending one.
+    $paid = createPendingCreditCardReference(['state' => 1, 'transaction_id' => '29753077']);
+    $pending = createPendingCreditCardReference();
+
+    $response = $this->getJson(route('eupago.creditcard.callback', validCreditCardCallbackPayload()));
+
+    $response->assertOk();
+    expect((int) $pending->fresh()->state)->toBe(0);
+    Event::assertNotDispatched(CreditCardReferencePaid::class);
+});
