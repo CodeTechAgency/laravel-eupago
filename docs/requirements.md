@@ -12,6 +12,11 @@ group: Getting started
 
 The package sends its requests through Laravel's HTTP client, which runs on Guzzle. Laravel 11 and later
 install the Guzzle version they support. Laravel 10 leaves Guzzle to the application, and new
-Laravel 10 applications already require it, so keep it in your `composer.json`.
+Laravel 10 applications already require it, so keep it in your `composer.json` at the version
+Laravel 10 supports:
+
+```json
+"guzzlehttp/guzzle": "^7.2"
+```
 
 Upgrading from an older version? See the [upgrade guide](https://github.com/CodeTechAgency/laravel-eupago/blob/master/UPGRADE.md).
