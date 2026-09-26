@@ -19,9 +19,9 @@ jobs:
         # PHPUnit ^11.5, so Laravel 10 rows always get Pest 2; Testbench 9+ rows
         # resolve Pest 3.
         include:
-          - { php: '8.1', laravel: '10.*', testbench: '8.*' }
-          - { php: '8.2', laravel: '10.*', testbench: '8.*' }
-          - { php: '8.3', laravel: '10.*', testbench: '8.*' }
+          - { php: '8.1', laravel: '10.*', testbench: '8.*', guzzle: '^7.2' }
+          - { php: '8.2', laravel: '10.*', testbench: '8.*', guzzle: '^7.2' }
+          - { php: '8.3', laravel: '10.*', testbench: '8.*', guzzle: '^7.2' }
           - { php: '8.2', laravel: '11.*', testbench: '9.*' }
           - { php: '8.3', laravel: '11.*', testbench: '9.*' }
           - { php: '8.4', laravel: '11.*', testbench: '9.*' }
@@ -53,6 +53,11 @@ jobs:
             "laravel/framework:${{ matrix.laravel }}" \
             "orchestra/testbench:${{ matrix.testbench }}" \
             --no-interaction --no-update
+          # Laravel 10 only suggests Guzzle, leaving it to the app, whose
+          # skeleton requires ^7.2; later versions require it themselves.
+          if [ -n "${{ matrix.guzzle }}" ]; then
+            composer require "guzzlehttp/guzzle:${{ matrix.guzzle }}" --no-interaction --no-update
+          fi
           composer update --prefer-dist --no-interaction --no-progress
 
       - name: Run tests
