@@ -2,9 +2,11 @@
 
 namespace CodeTech\EuPago\Http\Controllers;
 
+use CodeTech\EuPago\Enums\ReferenceState;
 use CodeTech\EuPago\Events\MBReferencePaid;
 use CodeTech\EuPago\Http\Requests\MbCallbackRequest;
 use CodeTech\EuPago\Models\MbReference;
+use CodeTech\EuPago\Models\MbReferencePayment;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -39,7 +41,7 @@ class MBController extends Controller
      */
     private function recordPayment(Builder $query, string $transaction, string $value): JsonResponse
     {
-        $payment = $query->getConnection()->transaction(function () use ($query, $transaction, $value) {
+        $payment = $query->getConnection()->transaction(function () use ($query, $transaction, $value): ?MbReferencePayment {
             $reference = $query->lockForUpdate()->first();
 
             if (! $reference) {
@@ -55,12 +57,12 @@ class MBController extends Controller
             // A reference can allow repeat payments, so one already paid still
             // takes a new payment, as long as its payments are recorded to tell
             // it from a redelivered one.
-            if ((int) $reference->getAttribute('state') !== 0 && ! $reference->payments()->exists()) {
+            if ((int) $reference->getAttribute('state') !== ReferenceState::Pending->value && ! $reference->payments()->exists()) {
                 return null;
             }
 
             $reference->update([
-                'state' => 1,
+                'state' => ReferenceState::Paid->value,
                 'transaction_id' => $transaction,
             ]);
 

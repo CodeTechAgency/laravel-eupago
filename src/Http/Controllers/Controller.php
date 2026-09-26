@@ -2,8 +2,10 @@
 
 namespace CodeTech\EuPago\Http\Controllers;
 
+use CodeTech\EuPago\Enums\ReferenceState;
 use CodeTech\EuPago\Http\Requests\CallbackRequest;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -53,18 +55,18 @@ class Controller extends BaseController
      */
     protected function confirmPayment(Builder $query, string $transaction, string $event): JsonResponse
     {
-        $reference = $query->getConnection()->transaction(function () use ($query, $transaction) {
+        $reference = $query->getConnection()->transaction(function () use ($query, $transaction): ?Model {
             // A reference already paid by this transaction comes first, so a
             // redelivery never marks another pending match as paid.
             $reference = $query
-                ->where(fn ($query) => $query->where('state', 0)->orWhere('transaction_id', $transaction))
+                ->where(fn ($query) => $query->where('state', ReferenceState::Pending->value)->orWhere('transaction_id', $transaction))
                 ->orderByDesc('state')
                 ->lockForUpdate()
                 ->first();
 
             if ($reference && $reference->getAttribute('transaction_id') !== $transaction) {
                 $reference->update([
-                    'state' => 1,
+                    'state' => ReferenceState::Paid->value,
                     'transaction_id' => $transaction,
                 ]);
             }

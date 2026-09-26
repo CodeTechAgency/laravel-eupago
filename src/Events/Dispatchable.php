@@ -8,7 +8,7 @@ trait Dispatchable
      * Dispatch the event with the given arguments.
      *
      * @param  mixed  ...$arguments
-     * @return mixed
+     * @return array|null the listeners' responses
      */
     public static function dispatch(...$arguments)
     {

@@ -35,7 +35,7 @@ class EuPagoServiceProvider extends ServiceProvider
     /**
      * Sets the configuration files.
      */
-    private function setConfigurations()
+    private function setConfigurations(): void
     {
         $this->mergeConfigFrom(
             __DIR__.'/../../config/eupago.php', 'eupago'
@@ -45,7 +45,7 @@ class EuPagoServiceProvider extends ServiceProvider
     /**
      * Loads the package routes.
      */
-    private function loadRoutes()
+    private function loadRoutes(): void
     {
         if (! $this->app['config']->get('eupago.routes')) {
             return;
@@ -65,7 +65,7 @@ class EuPagoServiceProvider extends ServiceProvider
     /**
      * Sets the publishable files.
      */
-    private function setPublishableFiles()
+    private function setPublishableFiles(): void
     {
         // The unprefixed tags are kept for backward compatibility; the docs use the prefixed ones.
         $this->publishes([

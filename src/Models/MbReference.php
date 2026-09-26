@@ -2,6 +2,8 @@
 
 namespace CodeTech\EuPago\Models;
 
+use CodeTech\EuPago\Enums\ReferenceState;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -36,22 +38,24 @@ class MbReference extends Model
     /**
      * Scopes a query to only include paid references.
      *
-     * @return mixed
+     * @param  Builder<static>  $query
+     * @return Builder<static>
      */
     public function scopePaid($query)
     {
-        return $query->where('state', 1);
+        return $query->where('state', ReferenceState::Paid->value);
     }
 
     /**
      * Scopes a query to the references that accept a payment of the given
      * value: their own value, or any amount within their range.
      *
-     * @return mixed
+     * @param  Builder<static>  $query
+     * @return Builder<static>
      */
-    public function scopeAccepting($query, $value)
+    public function scopeAccepting(Builder $query, string $value): Builder
     {
-        return $query->where(function ($query) use ($value) {
+        return $query->where(function (Builder $query) use ($value): void {
             $query->where('value', $value)
                 ->orWhere(fn ($query) => $query->where('min_value', '<=', $value)->where('max_value', '>=', $value));
         });
