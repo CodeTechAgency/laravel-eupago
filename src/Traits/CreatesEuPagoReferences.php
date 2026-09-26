@@ -6,7 +6,6 @@ use CodeTech\EuPago\EuPago;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
-use Illuminate\Support\Arr;
 
 trait CreatesEuPagoReferences
 {
@@ -32,6 +31,6 @@ trait CreatesEuPagoReferences
         // ...), which a strict model refuses after Eupago created the payment.
         $reference = $this->{$relation}();
 
-        return $reference->create(Arr::only($referenceData, $reference->getRelated()->getFillable()));
+        return $reference->create(array_intersect_key($referenceData, array_flip($reference->getRelated()->getFillable())));
     }
 }
