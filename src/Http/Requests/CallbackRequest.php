@@ -7,28 +7,37 @@ use Illuminate\Validation\Rule;
 abstract class CallbackRequest
 {
     /**
-     * Get the validation rules that apply to the callback.
+     * Get the validation rules that identify the caller as Eupago.
      */
-    public function rules(): array
+    public static function callerRules(): array
     {
         return [
-            'valor' => 'required',
             'canal' => [
                 'required',
                 Rule::in([config('eupago.channel')]),
             ],
-            'referencia' => ['required'],
-            'transacao' => 'required',
-            'identificador' => 'required',
-            'mp' => 'required',
             'chave_api' => [
                 'required',
                 Rule::in([config('eupago.api_key')]),
             ],
+        ];
+    }
+
+    /**
+     * Get the validation rules that apply to the callback.
+     */
+    public function rules(): array
+    {
+        return array_merge(static::callerRules(), [
+            'valor' => 'required|numeric',
+            'referencia' => ['required'],
+            'transacao' => 'required',
+            'identificador' => 'required',
+            'mp' => 'required',
             'data' => 'required|date_format:Y-m-d:H:i:s',
             'entidade' => 'required',
             'comissao' => 'required',
             'local' => 'nullable',
-        ];
+        ]);
     }
 }

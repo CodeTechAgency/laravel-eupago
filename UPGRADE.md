@@ -48,6 +48,42 @@ If `resources/lang` is now empty, remove it so Laravel goes back to `lang/`:
 rmdir resources/lang/vendor resources/lang
 ```
 
+Eupago sends every payment method's notification to the single URL a channel takes, so the per-method callback endpoints used to confirm only the payments of the method whose URL was set. There is now a single endpoint, and the per-method ones are aliases of it, so every method is confirmed whichever URL is set. The per-method endpoints are deprecated and will be removed in v4, so in the Eupago backoffice, set the channel's notification URL to the new endpoint:
+
+```
+https://your-app.test/eupago/callback
+```
+
+The per-method routes now point at `CallbackController`, so build their URLs by route name (`route('eupago.mb.callback')`) rather than by controller action.
+
+If you disabled the package routes and mounted a per-method controller on a route of your own, it still confirms only that method. Point your route at `CallbackController` instead. Keep its path, so the URL set in the backoffice keeps working, and set its method as the fallback for a notification whose `mp` the package does not know. Take it out of the `web` middleware group too, which stores the URL — API key included — in the session:
+
+```php
+use CodeTech\EuPago\Enums\PaymentMethod;
+use CodeTech\EuPago\Http\Controllers\CallbackController;
+
+Route::get('webhooks/eupago/mb', [CallbackController::class, 'callback'])
+    ->defaults('default_payment_method', PaymentMethod::Multibanco->value)
+    ->withoutMiddleware('web')
+    ->name('eupago.mb.callback');
+```
+
+The paid events now fire once the payment is stored, so queued listeners always find it. A notification Eupago delivers again now gets a 200 instead of a 404, still without firing the event.
+
+Multibanco payments are now recorded in a table of their own, so references with an amount range or with repeat payments can be confirmed. Re-publish the migrations, which leaves the existing files untouched:
+
+```bash
+php artisan vendor:publish --provider=CodeTech\\EuPago\\Providers\\EuPagoServiceProvider --tag=eupago-migrations
+```
+
+Run the new migration, which also records the payment of every reference paid since v3.9.0, when the transaction started being stored:
+
+```bash
+php artisan migrate
+```
+
+A Multibanco reference with an amount range is now confirmed for any amount within it, so the payment can be less than the reference's value. If your references accept a range, compare `$event->payment?->value` in your `MBReferencePaid` listeners with the amount owed.
+
 ## From v3.8.x to v3.9.0
 
 Multibanco, MB WAY, PayShop and PaysafeCard references now store the Eupago transaction their callback delivers, so a paid reference can be refunded through `$reference->transaction_id`. A new migration adds the column. Re-publish the migrations, which leaves the existing files untouched:

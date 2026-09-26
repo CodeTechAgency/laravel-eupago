@@ -41,7 +41,7 @@ status, you can leave these empty.
 The package supports two levels of usage:
 
 - **Full integration** (default): use the traits and models to persist references, and let the
-  package handle Eupago's webhooks — it registers the callback routes (`/eupago/*/callback`)
+  package handle Eupago's webhooks — it registers the [callback](callbacks.md) endpoint (`/eupago/callback`)
   automatically.
 - **Thin API client**: use only the payment classes (e.g. `(new MB(...))->create()`) and handle
   persistence and webhooks yourself.
@@ -52,16 +52,19 @@ If you only need the thin client, disable the automatic route registration:
 EUPAGO_ROUTES=false
 ```
 
-With the routes disabled you can still mount the package's callback controllers on routes of
+With the routes disabled you can still mount the package's callback controller on a route of
 your own, giving you full control over the path and middleware:
 
 ```php
-use CodeTech\EuPago\Http\Controllers\MBController;
+use CodeTech\EuPago\Http\Controllers\CallbackController;
 
-Route::get('webhooks/eupago/mb', [MBController::class, 'callback'])
-    ->middleware('web')
-    ->name('eupago.mb.callback');
+Route::get('webhooks/eupago', [CallbackController::class, 'callback'])
+    ->withoutMiddleware('web')
+    ->name('eupago.callback');
 ```
+
+Keep the route out of the `web` middleware group: a webhook has no use for a session, and the
+group would start one on every call, storing its URL — API key included.
 
 > **Note:** if your application caches routes, run `php artisan route:clear` after changing
 > this setting.

@@ -22,24 +22,10 @@ class CreditCardController extends Controller
         // Credit Card references are short per-channel counters, so unlike the
         // other methods `reference` is not unique on its own. The identifier
         // the callback echoes back pins the match to the right payment.
-        $reference = CreditCardReference::where('reference', $validatedData['referencia'])
+        $query = CreditCardReference::where('reference', $validatedData['referencia'])
             ->where('identifier', $validatedData['identificador'])
-            ->where('value', $validatedData['valor'])
-            ->where('state', 0)
-            ->first();
+            ->where('value', $validatedData['valor']);
 
-        if (! $reference) {
-            return response()->json(['response' => 'No pending reference found'])->setStatusCode(404);
-        }
-
-        $reference->update([
-            'state' => 1,
-            'transaction_id' => $validatedData['transacao'],
-        ]);
-
-        // trigger event
-        event(new CreditCardReferencePaid($reference));
-
-        return response()->json(['response' => 'Success'])->setStatusCode(200);
+        return $this->confirmPayment($query, $validatedData['transacao'], CreditCardReferencePaid::class);
     }
 }

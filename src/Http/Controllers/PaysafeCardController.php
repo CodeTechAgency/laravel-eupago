@@ -19,23 +19,9 @@ class PaysafeCardController extends Controller
     {
         $validatedData = $this->validateCallback($request, (new PaysafeCardCallbackRequest)->rules());
 
-        $reference = PaysafeCardReference::where('reference', $validatedData['referencia'])
-            ->where('value', $validatedData['valor'])
-            ->where('state', 0)
-            ->first();
+        $query = PaysafeCardReference::where('reference', $validatedData['referencia'])
+            ->where('value', $validatedData['valor']);
 
-        if (! $reference) {
-            return response()->json(['response' => 'No pending reference found'])->setStatusCode(404);
-        }
-
-        $reference->update([
-            'state' => 1,
-            'transaction_id' => $validatedData['transacao'],
-        ]);
-
-        // trigger event
-        event(new PaysafeCardReferencePaid($reference));
-
-        return response()->json(['response' => 'Success'])->setStatusCode(200);
+        return $this->confirmPayment($query, $validatedData['transacao'], PaysafeCardReferencePaid::class);
     }
 }
