@@ -10,4 +10,8 @@ group: Getting started
 | 2.x ([`2.x`](https://github.com/CodeTechAgency/laravel-eupago/tree/2.x)) | 9 / 10  | ≥ 8.0.2 | Security fixes |
 | 1.x ([`1.x`](https://github.com/CodeTechAgency/laravel-eupago/tree/1.x)) | 8       | ≥ 8.0   | End of life    |
 
+The package sends its requests through Laravel's HTTP client, which runs on Guzzle. Laravel 11 and later
+install the Guzzle version they support. Laravel 10 leaves Guzzle to the application, and new
+Laravel 10 applications already require it, so keep it in your `composer.json`.
+
 Upgrading from an older version? See the [upgrade guide](https://github.com/CodeTechAgency/laravel-eupago/blob/master/UPGRADE.md).
