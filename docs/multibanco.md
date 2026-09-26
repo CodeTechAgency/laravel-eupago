@@ -81,3 +81,11 @@ $mbReferences = $order->mbReferences;
 When the reference is paid, the [callback](callbacks.md) fires an `MBReferencePaid` event
 and stores the Eupago transaction on the reference, so a paid reference can be
 [refunded](refunds.md) through `$reference->transaction_id`.
+
+A reference with a minimum and maximum value accepts any amount in that range, and one that
+allows duplicated payments can be paid more than once. Each payment is recorded with the amount
+paid and its transaction, and the reference keeps the latest one:
+
+```php
+$payments = $reference->payments;
+```
