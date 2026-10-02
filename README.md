@@ -61,7 +61,7 @@ the reference as paid, and fires an `MBWayReferencePaid` event.
 
 This package handles the full payment lifecycle — creating references, webhooks,
 status checks, refunds. To learn all about it, head over to
-[the extensive documentation](https://www.codetech.pt/open-source/laravel-eupago).
+[the extensive documentation](https://codetech.pt/open-source/laravel-eupago).
 
 Upgrading from an older version? See the [upgrade guide](https://github.com/CodeTechAgency/laravel-eupago/blob/master/UPGRADE.md).
 
@@ -91,4 +91,4 @@ the [MIT license](https://github.com/CodeTechAgency/laravel-eupago/blob/master/L
 
 ## About CodeTech
 
-[CodeTech](https://www.codetech.pt) is a web development agency based in Matosinhos, Portugal. Oh, and we LOVE Laravel!
+[CodeTech](https://codetech.pt) is a web development agency based in Matosinhos, Portugal. Oh, and we LOVE Laravel!
