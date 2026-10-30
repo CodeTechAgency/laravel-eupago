@@ -5,6 +5,7 @@ use CodeTech\EuPago\Events\MBReferencePaid;
 use CodeTech\EuPago\Events\MBWayReferencePaid;
 use CodeTech\EuPago\Events\PaysafeCardReferencePaid;
 use CodeTech\EuPago\Events\PayShopReferencePaid;
+use CodeTech\EuPago\Exceptions\MissingConfiguration;
 use CodeTech\EuPago\Models\MbwayReference;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
@@ -66,6 +67,20 @@ it('checks the api key and channel before looking up the reference', function ()
         ->assertJsonStructure(['canal', 'chave_api'])
         ->assertJsonMissingPath('referencia');
 });
+
+it('reports a blank setting instead of rejecting the callback', function (string $key, string $variable, ?string $blank) {
+    $this->withoutExceptionHandling();
+    $payload = validMbCallbackPayload();
+    config()->set("eupago.{$key}", $blank);
+    $reference = createPendingMbReference();
+
+    expect(fn () => $this->getJson(route('eupago.callback', $payload)))
+        ->toThrow(MissingConfiguration::class, "The eupago.{$key} setting is blank. Set {$variable}");
+    expect((int) $reference->fresh()->state)->toBe(0);
+})->with([
+    'channel' => ['channel', 'EUPAGO_CHANNEL'],
+    'api key' => ['api_key', 'EUPAGO_API_KEY'],
+])->with(['unset' => null, 'empty' => '']);
 
 it('handles a notification of another method on a deprecated per-method endpoint', function () {
     Event::fake([MBWayReferencePaid::class]);
