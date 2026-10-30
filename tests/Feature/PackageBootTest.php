@@ -2,7 +2,7 @@
 
 it('merges the eupago config when the package boots', function () {
     expect(config('eupago.env'))->toBe('test')
-        ->and(config('eupago.channel'))->toBe('demo');
+        ->and(config('eupago.routes'))->toBeTrue();
 });
 
 it('registers the eupago callback routes by default', function () {

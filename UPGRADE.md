@@ -1,5 +1,15 @@
 # Upgrading
 
+## From v3.10.x to v3.11.0
+
+The `channel` setting used to fall back to `demo` when `EUPAGO_CHANNEL` was not set. Every callback carries the channel name and is rejected when it does not match the setting, so the fallback let an app that forgot the variable boot normally and silently confirm no payment. The setting now has no fallback, and a callback arriving while the channel or the API key is blank throws a `CodeTech\EuPago\Exceptions\MissingConfiguration` exception instead of being rejected as forged. If your sandbox channel really is named `demo` and you relied on the fallback, set it explicitly in `.env`:
+
+```ini
+EUPAGO_CHANNEL=demo
+```
+
+If you published the config, drop the `'demo'` fallback from `config/eupago.php` yourself, since publishing never overwrites an existing file.
+
 ## From v3.9.x to v3.10.0
 
 The publish tags are now prefixed with the package name: `eupago-migrations`, `eupago-config` and `eupago-translations`. The old `migrations`, `config` and `translations` tags keep working.

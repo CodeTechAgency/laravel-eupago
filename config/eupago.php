@@ -47,9 +47,16 @@ return [
     |--------------------------------------------------------------------------
     | Channel
     |--------------------------------------------------------------------------
+    |
+    | The name of the channel the API key belongs to, exactly as it appears
+    | in the Eupago backoffice. Every callback carries the channel name and
+    | is rejected when it does not match this value, so there is no default:
+    | a callback arriving while it is blank throws a MissingConfiguration
+    | exception instead of being rejected as forged.
+    |
     */
 
-    'channel' => env('EUPAGO_CHANNEL', 'demo'),
+    'channel' => env('EUPAGO_CHANNEL'),
 
     /*
     |--------------------------------------------------------------------------

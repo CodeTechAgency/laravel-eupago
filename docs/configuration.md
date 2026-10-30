@@ -25,7 +25,11 @@ when your application is ready to take real payments.
 
 `EUPAGO_API_KEY` is the API key of your Eupago channel — you find it in the
 [Eupago backoffice](https://clientes.eupago.pt), where each channel has its own key.
-`EUPAGO_CHANNEL` is the channel name; incoming callbacks are validated against it.
+`EUPAGO_CHANNEL` is the channel name, exactly as it appears in the backoffice: every
+incoming callback carries the channel name and is rejected when it does not match, so a
+wrong value confirms no payment at all. Neither setting has a default, and a callback
+arriving while one of them is blank throws a `MissingConfiguration` exception, so the
+mistake shows up in your logs rather than as a rejected notification on Eupago's side.
 
 ## OAuth client credentials
 

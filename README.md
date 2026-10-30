@@ -31,7 +31,7 @@ Run the migrations:
 php artisan migrate
 ```
 
-Set your Eupago credentials in `.env`:
+Set your Eupago credentials in `.env`. The channel must match the channel name in the Eupago backoffice exactly, since every callback is checked against it:
 
 ```ini
 EUPAGO_ENV=test

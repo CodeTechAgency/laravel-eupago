@@ -24,7 +24,8 @@ The endpoint reads the payment method from the notification (`mp`) and handles i
 
 The callback first checks the channel and API key, then matches the reference against the
 values Eupago echoes back, marks it as paid and fires the method's event with the reference as
-payload. The event fires once the payment is stored, and only once per payment: a notification
+payload. A callback arriving while the channel or API key [setting](configuration.md) is blank
+throws a `MissingConfiguration` exception rather than being rejected as forged. The event fires once the payment is stored, and only once per payment: a notification
 Eupago delivers again is acknowledged without firing it. That also holds when a listener throws,
 so put work that can fail, such as calling another service, in a
 [queued listener](https://laravel.com/docs/events#queued-event-listeners), which the queue retries.

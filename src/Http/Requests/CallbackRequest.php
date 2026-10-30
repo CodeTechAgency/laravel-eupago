@@ -2,15 +2,27 @@
 
 namespace CodeTech\EuPago\Http\Requests;
 
+use CodeTech\EuPago\Exceptions\MissingConfiguration;
 use Illuminate\Validation\Rule;
 
 abstract class CallbackRequest
 {
     /**
      * Get the validation rules that identify the caller as Eupago.
+     *
+     * A blank channel or API key would reject every callback as if it were
+     * forged, so it is reported as the configuration error it is instead.
+     *
+     * @throws MissingConfiguration
      */
     public static function callerRules(): array
     {
+        foreach (['channel' => 'EUPAGO_CHANNEL', 'api_key' => 'EUPAGO_API_KEY'] as $key => $variable) {
+            if (blank(config("eupago.{$key}"))) {
+                throw MissingConfiguration::forSetting($key, $variable);
+            }
+        }
+
         return [
             'canal' => [
                 'required',
